@@ -1,0 +1,6 @@
+Flask
+Flask-SQLAlchemy
+PyMySQL
+web3
+razorpay
+python-dotenv

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Market | Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-content">
+        <div class="hero-text">
+            <h1>Direct-from-farm produce with <span>transparent</span> payments.</h1>
+            <p>
+                FarmerMarket connects local farmers, buyers and delivery partners using
+                secure payments and blockchain-backed order tracking.
+            </p>
+            <div class="hero-actions">
+                <a href="/auth/register" class="btn btn-primary btn-lg">Create an account</a>
+                <a href="/auth/login" class="btn btn-outline btn-lg">Login</a>
+            </div>
+            <div class="hero-badges">
+                <span>✅ Fair pricing for farmers</span>
+                <span>✅ Trusted delivery tracking</span>
+                <span>✅ Secure online payments</span>
+            </div>
+        </div>
+        <div class="hero-card">
+            <div class="hero-card-header">Get started as</div>
+            <div class="hero-card-options">
+                <a href="/auth/register" class="role-card">
+                    <h3>👨‍🌾 Farmer</h3>
+                    <p>Upload your fresh produce, set prices and receive direct payments.</p>
+                </a>
+                <a href="/auth/register" class="role-card">
+                    <h3>🛒 Buyer</h3>
+                    <p>Browse local produce, place orders and track delivery in real-time.</p>
+                </a>
+                <a href="/auth/register" class="role-card">
+                    <h3>🚚 Delivery Partner</h3>
+                    <p>Earn by delivering verified orders in your area.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="section about">
+    <div class="container section-content">
+        <h2>Why FarmerMarket?</h2>
+        <p>
+            We remove middlemen and use technology to ensure farmers earn more,
+            buyers pay fair prices, and every delivery is tracked with proof.
+        </p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>⚖ Fair & transparent</h3>
+                <p>No hidden margins. Farmers control their pricing and availability.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔐 Secure payments</h3>
+                <p>Online payments with escrow logic so money is safe until delivery.</p>
+            </div>
+            <div class="feature-card">
+                <h3>⛓ Blockchain-backed</h3>
+                <p>Orders and delivery proof are stored on blockchain for higher trust.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📱 Simple to use</h3>
+                <p>A clean, mobile-friendly interface for all roles.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="roles" class="section roles">
+    <div class="container section-content">
+        <h2>Who is this for?</h2>
+        <div class="roles-grid">
+            <div class="role-pill">
+                <h3>For Farmers</h3>
+                <p>List products, confirm orders, get paid after verified delivery.</p>
+            </div>
+            <div class="role-pill">
+                <h3>For Buyers</h3>
+                <p>Buy fresh produce directly from verified farmers.</p>
+            </div>
+            <div class="role-pill">
+                <h3>For Delivery Partners</h3>
+                <p>Accept deliveries, upload proof and earn per drop.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="section how-it-works">
+    <div class="container section-content">
+        <h2>How it works</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <h3>Create your account</h3>
+                <p>Sign up as Farmer, Buyer or Delivery Partner and complete your profile.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <h3>Place or accept orders</h3>
+                <p>Farmers list items, buyers purchase, and delivery partners pick up routes.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <h3>Secure delivery & payment</h3>
+                <p>Delivery proof is uploaded, funds are released from escrow to the farmer.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section contact">
+    <div class="container section-content contact-layout">
+        <div>
+            <h2>Contact us</h2>
+            <p>
+                Have questions or want to partner with us?<br>
+                Reach out and we’ll get back to you soon.
+            </p>
+            <div class="contact-info">
+                <p>📧 Email: support@farmermarket.com</p>
+                <p>📍 Location: Bengaluru, India</p>
+            </div>
+        </div>
+        <form class="contact-form">
+            <div class="form-row">
+                <input type="text" placeholder="Your name" required>
+            </div>
+            <div class="form-row">
+                <input type="email" placeholder="Your email" required>
+            </div>
+            <div class="form-row">
+                <textarea rows="4" placeholder="Your message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

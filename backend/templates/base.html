@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Farmer Market{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <!-- Google Font (optional but modern) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-content">
+            <div class="nav-logo">
+                <span class="logo-icon">🌾</span>
+                <span class="logo-text">Farmer<span>Market</span></span>
+            </div>
+            <nav class="nav-links">
+                <a href="#about">About</a>
+                <a href="#roles">Roles</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/auth/login" class="btn btn-outline">Login</a>
+                <a href="/auth/register" class="btn btn-primary">Create Account</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>© {{ 2025 }} FarmerMarket. All rights reserved.</p>
+            <p class="footer-tagline">Connecting farmers, buyers and delivery partners with trust & transparency.</p>
+        </div>
+    </footer>
+</body>
+</html>
