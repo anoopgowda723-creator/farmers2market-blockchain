@@ -1,0 +1,82 @@
+{% extends "admin/layout_admin.html" %}
+
+
+{% block title %}User Approvals | Admin{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <h1 class="page-title">Manage Users</h1>
+    <p class="page-subtitle">Approve or deactivate users.</p>
+
+    <div class="section-card mt-4">
+        <h2>Pending Approvals</h2>
+
+        {% if pending_users %}
+        <table class="fm-table mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Registered</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in pending_users %}
+                <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.phone }}</td>
+                    <td>{{ u.role }}</td>
+                    <td>{{ u.created_at.strftime("%Y-%m-%d") if u.created_at else "-" }}</td>
+                    <td class="text-right">
+                        <form method="post" action="{{ url_for('admin.approve_user', user_id=u.id) }}" style="display:inline;">
+                            <button class="btn-small btn-primary">Approve</button>
+                        </form>
+                        <form method="post" action="{{ url_for('admin.deactivate_user', user_id=u.id) }}" style="display:inline;">
+                            <button class="btn-small btn-outline">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty-text">No pending users.</p>
+        {% endif %}
+    </div>
+
+    <div class="section-card mt-4">
+        <h2>Approved Users</h2>
+
+        {% if approved_users %}
+        <table class="fm-table mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in approved_users %}
+                <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.role }}</td>
+                    <td>{{ "Active" if u.is_active else "Inactive" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty-text">No approved users yet.</p>
+        {% endif %}
+    </div>
+<a href="{{ url_for('admin.dashboard') }}" class="back-btn">← Back to Dashboard</a>
+
+</section>
+{% endblock %}

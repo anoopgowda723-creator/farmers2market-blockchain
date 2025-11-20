@@ -5,338 +5,282 @@
 {% block content %}
 
 <style>
-/* ----------------------------------
+    /* ----------------------------------
    AUTH PAGE STYLES (INLINE)
 ---------------------------------- */
 
-.auth-page {
-    min-height: calc(100vh - 72px - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2.5rem 1rem;
-}
+    .auth-page {
+        min-height: calc(100vh - 72px - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+    }
 
-.auth-card {
-    width: 100%;
-    max-width: 520px;
-    background: rgba(15, 23, 42, 0.96);
-    border-radius: 1.5rem;
-    padding: 1.8rem 1.6rem;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
-}
-
-.auth-card h1 {
-    margin: 0 0 0.4rem;
-    font-size: 1.45rem;
-    font-weight: 600;
-}
-
-.auth-subtitle {
-    margin: 0 0 1.3rem;
-    color: #9ca3af;
-    font-size: 0.9rem;
-}
-
-.auth-error {
-    margin-bottom: 0.9rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 0.8rem;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #fecaca;
-    font-size: 0.85rem;
-}
-
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.auth-grid-two {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem 0.9rem;
-}
-
-.auth-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.auth-field label {
-    font-size: 0.78rem;
-    color: #9ca3af;
-}
-
-.auth-field input,
-.auth-field select {
-    border-radius: 0.8rem;
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    padding: 0.5rem 0.75rem;
-    background: rgba(15, 23, 42, 0.9);
-    color: #f9fafb;
-    font-family: inherit;
-    font-size: 0.9rem;
-    outline: none;
-}
-
-.auth-field input:focus,
-.auth-field select:focus {
-    border-color: #22c55e;
-    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
-}
-
-/* Email + Phone + Verify row */
-.verify-row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem 0.9rem;
-    align-items: end;
-    margin-top: 0.4rem;
-}
-
-.verify-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 0.2rem;
-}
-
-.otp-inline {
-    grid-column: 1 / -1;
-    max-width: 220px;
-    margin-top: 0.2rem;
-}
-
-.otp-inline input {
-    letter-spacing: 0.3em;
-    text-align: center;
-}
-
-/* Buttons */
-
-.btn {
-    border-radius: 999px;
-    padding: 0.45rem 1.1rem;
-    font-size: 0.9rem;
-    border: 1px solid transparent;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.3rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-full {
-    width: 100%;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #022c22;
-    font-weight: 600;
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
-}
-
-.btn-primary:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-}
-
-.btn-outline {
-    border-color: rgba(148, 163, 184, 0.6);
-    color: #e5e7eb;
-    background: transparent;
-}
-
-.btn-outline:hover {
-    border-color: #22c55e;
-    color: #f9fafb;
-    background: rgba(15, 23, 42, 0.85);
-}
-
-.btn-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* helper text */
-.helper-text {
-    font-size: 0.78rem;
-    color: #9ca3af;
-}
-
-.helper-ok {
-    color: #4ade80;
-}
-
-/* Footer text */
-
-.auth-submit {
-    margin-top: 0.4rem;
-}
-
-.auth-footer-text {
-    margin-top: 1rem;
-    font-size: 0.82rem;
-    color: #9ca3af;
-    text-align: center;
-}
-
-.auth-footer-text a {
-    color: #22c55e;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.auth-footer-text a:hover {
-    text-decoration: underline;
-}
-
-/* Mobile Responsive */
-@media (max-width: 640px) {
     .auth-card {
-        padding: 1.5rem 1.2rem;
+        width: 100%;
+        max-width: 520px;
+        background: rgba(15, 23, 42, 0.96);
+        border-radius: 1.5rem;
+        padding: 1.8rem 1.6rem;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
     }
+
+    .auth-card h1 {
+        margin: 0 0 0.4rem;
+        font-size: 1.45rem;
+        font-weight: 600;
+    }
+
+    .auth-subtitle {
+        margin: 0 0 1.3rem;
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    .auth-error {
+        margin-bottom: 0.9rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.8rem;
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #fecaca;
+        font-size: 0.85rem;
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
     .auth-grid-two {
-        grid-template-columns: minmax(0, 1fr);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem 0.9rem;
     }
+
+    .auth-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .auth-field label {
+        font-size: 0.78rem;
+        color: #9ca3af;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        border-radius: 0.8rem;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        padding: 0.5rem 0.75rem;
+        background: rgba(15, 23, 42, 0.9);
+        color: #f9fafb;
+        font-family: inherit;
+        font-size: 0.9rem;
+        outline: none;
+    }
+
+    .auth-field input:focus,
+    .auth-field select:focus {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+    }
+
+    /* OTP verify row */
     .verify-row {
-        grid-template-columns: minmax(0, 1fr);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem 0.9rem;
+        align-items: end;
+        margin-top: 0.4rem;
     }
-}
+
+    .verify-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 0.2rem;
+    }
+
+    .otp-inline {
+        grid-column: 1 / -1;
+        max-width: 220px;
+        margin-top: 0.2rem;
+    }
+
+    .otp-inline input {
+        letter-spacing: 0.3em;
+        text-align: center;
+    }
+
+    /* Buttons */
+
+    .btn {
+        border-radius: 999px;
+        padding: 0.45rem 1.1rem;
+        font-size: 0.9rem;
+        border: 1px solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: #022c22;
+        font-weight: 600;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-outline {
+        border-color: rgba(148, 163, 184, 0.6);
+        color: #e5e7eb;
+    }
+
+    .btn-outline:hover {
+        border-color: #22c55e;
+        background: rgba(15, 23, 42, 0.85);
+    }
+
+    .btn-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .helper-text {
+        font-size: 0.78rem;
+        color: #9ca3af;
+    }
+
+    .helper-ok {
+        color: #4ade80;
+    }
+
+    .auth-submit {
+        margin-top: 0.4rem;
+    }
+
+    .auth-footer-text {
+        margin-top: 1rem;
+        font-size: 0.82rem;
+        color: #9ca3af;
+        text-align: center;
+    }
+
+    .auth-footer-text a {
+        color: #22c55e;
+    }
+
+    @media (max-width: 640px) {
+        .auth-card {
+            padding: 1.5rem 1.2rem;
+        }
+
+        .auth-grid-two,
+        .verify-row {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
 </style>
 
 <section class="auth-page">
     <div class="auth-card">
         <h1>Create your account</h1>
-        <p class="auth-subtitle">
-            Join as a Farmer, Buyer or Delivery Partner and start using FarmerMarket.
-        </p>
+        <p class="auth-subtitle">Join FarmerMarket and start using the platform.</p>
 
         {% if error %}
-            <div class="auth-error">
-                {{ error }}
-            </div>
+        <div class="auth-error">{{ error }}</div>
         {% endif %}
         {% if otp_error %}
-            <div class="auth-error">
-                {{ otp_error }}
-            </div>
+        <div class="auth-error">{{ otp_error }}</div>
         {% endif %}
 
         <form method="post" class="auth-form">
-            <!-- Row 1: Name + Role -->
+
+            <!-- Name + Role -->
             <div class="auth-grid-two">
                 <div class="auth-field">
-                    <label for="name">Full Name</label>
-                    <input type="text"
-                           id="name"
-                           name="name"
-                           value="{{ form.name if form else '' }}"
-                           placeholder="R Rahul"
-                           required>
+                    <label>Full Name</label>
+                    <input type="text" name="name" value="{{ form.name if form else '' }}" required>
                 </div>
 
                 <div class="auth-field">
-                    <label for="role">Register As</label>
-                    <select id="role" name="role" required>
-                        {% set selected = form.role if form else '' %}
-                        <option value="BUYER"    {{ 'selected' if selected == 'BUYER' else '' }}>Buyer</option>
-                        <option value="FARMER"   {{ 'selected' if selected == 'FARMER' else '' }}>Farmer</option>
-                        <option value="DELIVERY" {{ 'selected' if selected == 'DELIVERY' else '' }}>Delivery Partner</option>
+                    <label>Register As</label>
+                    <select name="role" required>
+                        {% set selected = request.args.get('role') or (form.role if form else '') %}
+                        <option value="BUYER" {{ 'selected' if selected=='BUYER' else '' }}>Buyer</option>
+                        <option value="FARMER" {{ 'selected' if selected=='FARMER' else '' }}>Farmer</option>
+                        <option value="DELIVERY" {{ 'selected' if selected=='DELIVERY' else '' }}>Delivery Partner
+                        </option>
                     </select>
                 </div>
             </div>
 
-            <!-- Row 2: Email + Phone + Verify + OTP -->
+            <!-- Email + Phone + Verify OTP -->
             <div class="verify-row">
                 <div class="auth-field">
-                    <label for="email">Email Address</label>
-                    <input type="email"
-                           id="email"
-                           name="email"
-                           value="{{ form.email if form else '' }}"
-                           placeholder="yourname@gmail.com"
-                           required>
+                    <label>Email Address</label>
+                    <input type="email" name="email" value="{{ form.email if form else '' }}" required>
                 </div>
 
                 <div class="auth-field">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel"
-                           id="phone"
-                           name="phone"
-                           value="{{ form.phone if form else '' }}"
-                           placeholder="6364740142"
-                           required>
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" value="{{ form.phone if form else '' }}" required>
                 </div>
 
                 <div class="verify-actions">
-                    <button type="submit"
-                            name="action"
-                            value="send_otp"
-                            class="btn btn-outline">
-                        Verify Email & Phone
+                    <button type="submit" name="action" value="send_otp" class="btn btn-outline">
+                        Verify Phone Number
                     </button>
 
                     {% if otp_sent %}
-                        <span class="helper-text helper-ok">
-                            OTP sent to {{ email }} and {{ phone }}.
-                        </span>
+                    <span class="helper-text helper-ok">
+                        OTP sent to {{ phone }}.
+                    </span>
                     {% else %}
-                        <span class="helper-text">
-                            Click verify to receive OTP.
-                        </span>
+                    <span class="helper-text">
+                        Click verify to receive OTP on phone.
+                    </span>
                     {% endif %}
                 </div>
 
                 {% if otp_sent %}
                 <div class="auth-field otp-inline">
-                    <label for="otp_code">Enter OTP</label>
-                    <input type="text"
-                           id="otp_code"
-                           name="otp_code"
-                           placeholder="••••••"
-                           maxlength="6"
-                           required>
+                    <label>Enter OTP</label>
+                    <input type="text" name="otp_code" maxlength="6" placeholder="••••••" required>
                 </div>
                 {% endif %}
             </div>
 
-            <!-- Row 3: Passwords -->
+            <!-- Passwords -->
             <div class="auth-grid-two">
                 <div class="auth-field">
-                    <label for="password">Password</label>
-                    <input type="password"
-                           id="password"
-                           name="password"
-                           placeholder="Create a password"
-                           required>
+                    <label>Password</label>
+                    <input type="password" name="password" required>
                 </div>
 
                 <div class="auth-field">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input type="password"
-                           id="confirm_password"
-                           name="confirm_password"
-                           placeholder="Re-enter password"
-                           required>
+                    <label>Confirm Password</label>
+                    <input type="password" name="confirm_password" required>
                 </div>
             </div>
 
-            <button type="submit"
-                    name="action"
-                    value="register"
-                    class="btn btn-primary btn-full auth-submit {% if not otp_sent %}btn-disabled{% endif %}"
-                    {% if not otp_sent %}disabled{% endif %}>
+            <button type="submit" name="action" value="register"
+                class="btn btn-primary btn-full auth-submit {% if not otp_sent %}btn-disabled{% endif %}" {% if not
+                otp_sent %}disabled{% endif %}>
                 Create Account
             </button>
         </form>

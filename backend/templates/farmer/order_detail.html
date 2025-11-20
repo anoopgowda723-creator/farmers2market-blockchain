@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Order Detail | FarmerMarket{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<section class="page-shell">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Order {{ order.order_uuid or order.id }}</h1>
+            <p class="page-subtitle">
+                Buyer: {{ order.buyer.name if order.buyer else '-' }} · Status: {{ order.status }}
+            </p>
+        </div>
+        <a href="{{ url_for('farmer.orders_list') }}" class="btn-small btn-outline">← Back to Orders</a>
+    </div>
+
+    <div class="section-card">
+        <h2 class="section-title">Order Summary</h2>
+        <p>Total amount: <strong>₹{{ "%.2f"|format(order.total_amount) }}</strong></p>
+        <p>Placed at: {{ order.created_at.strftime("%Y-%m-%d %H:%M") if order.created_at else "-" }}</p>
+
+        <h3 class="section-subtitle mt-4">Delivery Address</h3>
+        <p>{{ order.delivery_address or "Not available" }}</p>
+
+        <h3 class="section-subtitle mt-4">Items</h3>
+        {% if order.items %}
+            <ul class="plain-list">
+                {% for item in order.items %}
+                    <li>
+                        {{ item.product.name if item.product else 'Product' }} –
+                        Qty: {{ item.quantity }} –
+                        ₹{{ "%.2f"|format(item.price) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-text">Items not loaded in this view.</p>
+        {% endif %}
+
+        {% if order.status == "PAID" %}
+            <form method="post"
+                  action="{{ url_for('farmer.order_confirm', order_id=order.id) }}"
+                  class="mt-4">
+                <button type="submit" class="btn-primary">
+                    Confirm Order
+                </button>
+            </form>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

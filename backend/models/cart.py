@@ -6,7 +6,7 @@ class Cart(db.Model):
     __tablename__ = "carts"
 
     id = db.Column(db.BigInteger, primary_key=True)
-    buyer_id = db.Column(db.BigInteger, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey("users.id"), nullable=False)
     status = db.Column(
         db.Enum("ACTIVE", "ORDERED", "ABANDONED", name="cart_status"),
         nullable=False,
@@ -15,7 +15,7 @@ class Cart(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    buyer = db.relationship("User", backref=db.backref("carts", lazy="dynamic"))
+    user = db.relationship("User", backref=db.backref("carts", lazy="dynamic"))
     items = db.relationship("CartItem", back_populates="cart", lazy="dynamic", cascade="all, delete-orphan")
 
 

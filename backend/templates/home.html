@@ -1,142 +1,218 @@
 {% extends "base.html" %}
 
-{% block title %}Farmer Market | Home{% endblock %}
+{% block title %}Farmer2Market - Direct Farm-to-Market Platform{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <div class="container hero-content">
-        <div class="hero-text">
-            <h1>Direct-from-farm produce with <span>transparent</span> payments.</h1>
-            <p>
-                FarmerMarket connects local farmers, buyers and delivery partners using
-                secure payments and blockchain-backed order tracking.
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 100px 0;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+            <!-- Left Side -->
+            <div style="color: white;">
+                <h1 style="font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem;">
+                    Direct-from-farm produce with <span style="color: #fbbf24;">transparent</span> payments
+                </h1>
+                <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.95;">
+                    Connect local farmers, buyers, and delivery partners using secure payments and blockchain-backed
+                    order tracking.
+                </p>
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <a href="/auth/register"
+                        style="background: #fbbf24; color: #111827; font-size: 1.125rem; padding: 1rem 2rem; font-weight: 700; border-radius: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">
+                        <i class="fas fa-user-plus"></i> Get Started Free
+                    </a>
+                    <a href="/auth/login"
+                        style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; font-size: 1.125rem; padding: 1rem 2rem; font-weight: 600; border-radius: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                </div>
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        <i class="fas fa-check-circle" style="color: #fbbf24;"></i> Fair pricing for farmers
+                    </span>
+                    <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        <i class="fas fa-shield-alt" style="color: #fbbf24;"></i> Secure escrow payments
+                    </span>
+                    <span style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        <i class="fas fa-cube" style="color: #fbbf24;"></i> Blockchain verified
+                    </span>
+                </div>
+            </div>
+
+            <!-- Right Side - Role Selector -->
+            <div
+                style="background: white; padding: 2.5rem; border-radius: 1.5rem; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+                <h3
+                    style="text-align: center; font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: #111827;">
+                    Join as</h3>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <a href="/auth/register?role=FARMER"
+                        style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border: 2px solid #e5e7eb; border-radius: 1rem; text-decoration: none; transition: all 0.3s;"
+                        onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(16,185,129,0.2)'"
+                        onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div style="font-size: 2.5rem;">🌾</div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem;">
+                                Farmer</h4>
+                            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Sell your produce directly to
+                                buyers</p>
+                        </div>
+                    </a>
+
+                    <a href="/auth/register?role=BUYER"
+                        style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border: 2px solid #e5e7eb; border-radius: 1rem; text-decoration: none; transition: all 0.3s;"
+                        onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(16,185,129,0.2)'"
+                        onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div style="font-size: 2.5rem;">🛒</div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem;">
+                                Buyer</h4>
+                            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Buy fresh produce from local
+                                farmers</p>
+                        </div>
+                    </a>
+
+                    <a href="/auth/register?role=DELIVERY"
+                        style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border: 2px solid #e5e7eb; border-radius: 1rem; text-decoration: none; transition: all 0.3s;"
+                        onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(16,185,129,0.2)'"
+                        onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div style="font-size: 2.5rem;">🚚</div>
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem;">
+                                Delivery Partner</h4>
+                            <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">Earn by delivering verified
+                                orders</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section style="padding: 80px 0; background: #f9fafb;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="text-align: center; margin-bottom: 4rem;">
+            <h2 style="font-size: 2.5rem; font-weight: 800; color: #111827; margin-bottom: 1rem;">Why Farmer2Market?
+            </h2>
+            <p style="font-size: 1.125rem; color: #6b7280; max-width: 700px; margin: 0 auto;">
+                We remove middlemen and use technology to ensure farmers earn more, buyers pay fair prices, and every
+                delivery is tracked with proof.
             </p>
-            <div class="hero-actions">
-                <a href="/auth/register" class="btn btn-primary btn-lg">Create an account</a>
-                <a href="/auth/login" class="btn btn-outline btn-lg">Login</a>
-            </div>
-            <div class="hero-badges">
-                <span>✅ Fair pricing for farmers</span>
-                <span>✅ Trusted delivery tracking</span>
-                <span>✅ Secure online payments</span>
-            </div>
         </div>
-        <div class="hero-card">
-            <div class="hero-card-header">Get started as</div>
-            <div class="hero-card-options">
-                <a href="/auth/register" class="role-card">
-                    <h3>👨‍🌾 Farmer</h3>
-                    <p>Upload your fresh produce, set prices and receive direct payments.</p>
-                </a>
-                <a href="/auth/register" class="role-card">
-                    <h3>🛒 Buyer</h3>
-                    <p>Browse local produce, place orders and track delivery in real-time.</p>
-                </a>
-                <a href="/auth/register" class="role-card">
-                    <h3>🚚 Delivery Partner</h3>
-                    <p>Earn by delivering verified orders in your area.</p>
-                </a>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+            <div style="background: white; text-align: center; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⚖️</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Fair &
+                    Transparent</h3>
+                <p style="color: #6b7280; font-size: 0.95rem; margin: 0;">No hidden margins. Farmers control their
+                    pricing and availability.</p>
+            </div>
+
+            <div style="background: white; text-align: center; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Secure
+                    Payments</h3>
+                <p style="color: #6b7280; font-size: 0.95rem; margin: 0;">Razorpay integration with blockchain escrow
+                    for maximum security.</p>
+            </div>
+
+            <div style="background: white; text-align: center; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⛓️</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">
+                    Blockchain-Backed</h3>
+                <p style="color: #6b7280; font-size: 0.95rem; margin: 0;">Orders and delivery proof stored on blockchain
+                    for higher trust.</p>
+            </div>
+
+            <div style="background: white; text-align: center; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;"
+                onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Simple to Use
+                </h3>
+                <p style="color: #6b7280; font-size: 0.95rem; margin: 0;">Clean, mobile-friendly interface for all
+                    roles.</p>
             </div>
         </div>
     </div>
 </section>
 
-<section id="about" class="section about">
-    <div class="container section-content">
-        <h2>Why FarmerMarket?</h2>
-        <p>
-            We remove middlemen and use technology to ensure farmers earn more,
-            buyers pay fair prices, and every delivery is tracked with proof.
-        </p>
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3>⚖ Fair & transparent</h3>
-                <p>No hidden margins. Farmers control their pricing and availability.</p>
-            </div>
-            <div class="feature-card">
-                <h3>🔐 Secure payments</h3>
-                <p>Online payments with escrow logic so money is safe until delivery.</p>
-            </div>
-            <div class="feature-card">
-                <h3>⛓ Blockchain-backed</h3>
-                <p>Orders and delivery proof are stored on blockchain for higher trust.</p>
-            </div>
-            <div class="feature-card">
-                <h3>📱 Simple to use</h3>
-                <p>A clean, mobile-friendly interface for all roles.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="roles" class="section roles">
-    <div class="container section-content">
-        <h2>Who is this for?</h2>
-        <div class="roles-grid">
-            <div class="role-pill">
-                <h3>For Farmers</h3>
-                <p>List products, confirm orders, get paid after verified delivery.</p>
-            </div>
-            <div class="role-pill">
-                <h3>For Buyers</h3>
-                <p>Buy fresh produce directly from verified farmers.</p>
-            </div>
-            <div class="role-pill">
-                <h3>For Delivery Partners</h3>
-                <p>Accept deliveries, upload proof and earn per drop.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="how-it-works" class="section how-it-works">
-    <div class="container section-content">
-        <h2>How it works</h2>
-        <div class="steps-grid">
-            <div class="step-card">
-                <span class="step-number">1</span>
-                <h3>Create your account</h3>
-                <p>Sign up as Farmer, Buyer or Delivery Partner and complete your profile.</p>
-            </div>
-            <div class="step-card">
-                <span class="step-number">2</span>
-                <h3>Place or accept orders</h3>
-                <p>Farmers list items, buyers purchase, and delivery partners pick up routes.</p>
-            </div>
-            <div class="step-card">
-                <span class="step-number">3</span>
-                <h3>Secure delivery & payment</h3>
-                <p>Delivery proof is uploaded, funds are released from escrow to the farmer.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="contact" class="section contact">
-    <div class="container section-content contact-layout">
-        <div>
-            <h2>Contact us</h2>
-            <p>
-                Have questions or want to partner with us?<br>
-                Reach out and we’ll get back to you soon.
+<!-- How It Works -->
+<section style="padding: 80px 0; background: white;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="text-align: center; margin-bottom: 4rem;">
+            <h2 style="font-size: 2.5rem; font-weight: 800; color: #111827; margin-bottom: 1rem;">How It Works</h2>
+            <p style="font-size: 1.125rem; color: #6b7280;">Three simple steps to start buying or selling fresh produce
             </p>
-            <div class="contact-info">
-                <p>📧 Email: support@farmermarket.com</p>
-                <p>📍 Location: Bengaluru, India</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem;">
+            <div style="text-align: center;">
+                <div
+                    style="width: 64px; height: 64px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 50%; font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    1</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Create Your
+                    Account</h3>
+                <p style="color: #6b7280; margin: 0;">Sign up as Farmer, Buyer, or Delivery Partner and complete your
+                    profile.</p>
+            </div>
+
+            <div style="text-align: center;">
+                <div
+                    style="width: 64px; height: 64px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 50%; font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    2</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Place or
+                    Accept Orders</h3>
+                <p style="color: #6b7280; margin: 0;">Farmers list items, buyers purchase, and delivery partners pick up
+                    routes.</p>
+            </div>
+
+            <div style="text-align: center;">
+                <div
+                    style="width: 64px; height: 64px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 50%; font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    3</div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">Secure
+                    Delivery & Payment</h3>
+                <p style="color: #6b7280; margin: 0;">Delivery proof is uploaded, funds are released from escrow to the
+                    farmer.</p>
             </div>
         </div>
-        <form class="contact-form">
-            <div class="form-row">
-                <input type="text" placeholder="Your name" required>
-            </div>
-            <div class="form-row">
-                <input type="email" placeholder="Your email" required>
-            </div>
-            <div class="form-row">
-                <textarea rows="4" placeholder="Your message"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Send Message</button>
-        </form>
     </div>
 </section>
+
+<!-- CTA Section -->
+<section style="padding: 80px 0; background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; text-align: center;">
+        <h2 style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 1rem;">Ready to Get Started?</h2>
+        <p style="font-size: 1.25rem; color: rgba(255,255,255,0.9); margin-bottom: 2rem;">Join thousands of farmers,
+            buyers, and delivery partners on Farmer2Market</p>
+        <a href="/auth/register"
+            style="background: #fbbf24; color: #111827; font-size: 1.25rem; padding: 1.25rem 3rem; font-weight: 700; border-radius: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);">
+            <i class="fas fa-rocket"></i> Start Now
+        </a>
+    </div>
+</section>
+
+<style>
+    @media (max-width: 1024px) {
+        section>div>div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem !important;
+        }
+
+        h2 {
+            font-size: 1.75rem !important;
+        }
+    }
+</style>
 {% endblock %}

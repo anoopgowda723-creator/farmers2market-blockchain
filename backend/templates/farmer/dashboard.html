@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Farmer Dashboard | FarmerMarket{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/farmer.css') }}">
+
+<section class="page-shell">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Farmer Dashboard</p>
+      <h1 class="page-title">Welcome, {{ current_user.name or 'Farmer' }} 👋</h1>
+      <p class="page-subtitle">
+        Your farm is your factory. Manage all your products, stock and payouts from one place.
+      </p>
+    </div>
+
+    <div class="page-header-actions">
+      <a href="{{ url_for('farmer.product_create') }}" class="btn-primary-lg">
+        + Add New Product
+      </a>
+      <a href="{{ url_for('farmer.profile') }}" class="btn-soft">
+        Profile &amp; Payouts
+      </a>
+    </div>
+  </div>
+
+  <!-- Alerts / reminders -->
+  {% if payout_missing or location_missing %}
+  <div class="alert-banner alert-warning">
+    <div>
+      <h3>Complete your profile to start receiving orders</h3>
+      <ul>
+        {% if payout_missing %}
+        <li>Add your bank / UPI details so we can send you payouts.</li>
+        {% endif %}
+        {% if location_missing %}
+        <li>Set your warehouse pickup location for delivery partners.</li>
+        {% endif %}
+      </ul>
+    </div>
+    <a href="{{ url_for('farmer.profile') }}" class="btn-primary-sm">
+      Update now
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- Stats cards -->
+  <div class="cards-grid">
+    <div class="stat-card">
+      <p class="stat-label">Total Products</p>
+      <p class="stat-value">{{ total_products }}</p>
+      <p class="stat-hint">Everything you have listed</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Live Products</p>
+      <p class="stat-value">{{ live_count }}</p>
+      <p class="stat-hint">Approved & visible to buyers</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Pending Approval</p>
+      <p class="stat-value">{{ pending_count }}</p>
+      <p class="stat-hint">Waiting for admin review</p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Out of Stock</p>
+      <p class="stat-value">{{ out_of_stock_count }}</p>
+      <p class="stat-hint">Restock to continue selling</p>
+    </div>
+  </div>
+
+  <!-- Product list -->
+  <div class="section-card mt-6">
+    <div class="section-header">
+      <h2>Your Products</h2>
+      <span class="section-note">Overview of all items from your farm</span>
+    </div>
+
+    {% if products %}
+    <div class="table-wrapper">
+      <table class="fm-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Price / Unit</th>
+            <th>Unit</th>
+            <th>Quantity Available</th>
+            <th>Created</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td class="product-cell">
+              <div class="product-main">
+                {% if p.image1_url %}
+                <img src="{{ p.image1_url }}" alt="{{ p.name }}" class="product-thumb">
+                {% endif %}
+                <div>
+                  <div class="product-name">{{ p.name }}</div>
+                  <div class="product-description">
+                    {{ p.description[:80] ~ ('…' if p.description|length > 80 else '') }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if p.status == 'APPROVED' %}
+              <span class="badge badge-success">Live</span>
+              {% elif p.status == 'PENDING_APPROVAL' %}
+              <span class="badge badge-warning">Pending</span>
+              {% else %}
+              <span class="badge badge-danger">Rejected</span>
+              {% endif %}
+            </td>
+            <td>₹{{ "%.2f"|format(p.price or 0) }}</td>
+            <td>{{ p.unit_label or "kg" }}</td>
+            <td>{{ p.stock or 0 }}</td>
+            <td>{{ p.created_at.strftime("%Y-%m-%d") if p.created_at else "-" }}</td>
+            <td class="text-right">
+              <a href="{{ url_for('farmer.product_edit', product_id=p.id) }}" class="btn-table-link">Edit</a>
+              <!-- Later you can add deactivate or view details -->
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty-text">
+      You haven’t listed any products yet. Start by adding your first crop or item.
+    </p>
+    <a href="{{ url_for('farmer.product_create') }}" class="btn-primary-lg">
+      + Add New Product
+    </a>
+
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

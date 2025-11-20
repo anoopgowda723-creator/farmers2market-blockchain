@@ -1,0 +1,85 @@
+{% extends "admin/layout_admin.html" %}
+
+{% block title %}Product Approvals | Admin{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <h1 class="page-title">Manage Products</h1>
+    <p class="page-subtitle">Approve or reject products added by farmers.</p>
+
+    <div class="section-card mt-4">
+        <h2>Pending Products</h2>
+
+        {% if pending_products %}
+        <table class="fm-table mt-3">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Farmer</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Created</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pending_products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.farmer.name if p.farmer else "-" }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>₹{{ "%.2f"|format(p.price) }}</td>
+                    <td>{{ p.created_at.strftime("%Y-%m-%d") }}</td>
+
+                    <td class="text-right">
+                        <form method="post" action="{{ url_for('admin.approve_product', product_id=p.id) }}" style="display:inline;">
+                            <button class="btn-small btn-primary">Approve</button>
+                        </form>
+                        <form method="post" action="{{ url_for('admin.reject_product', product_id=p.id) }}" style="display:inline;">
+                            <button class="btn-small btn-outline">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty-text">No pending products.</p>
+        {% endif %}
+    </div>
+
+    <div class="section-card mt-4">
+        <h2>Approved Products</h2>
+
+        {% if approved_products %}
+        <table class="fm-table mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Farmer</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in approved_products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.farmer.name if p.farmer else "-" }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>₹{{ "%.2f"|format(p.price) }}</td>
+                    <td>{{ p.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="empty-text">No approved products.</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="back-btn">← Back to Dashboard</a>
+
+
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('main.home') }}">
+            <i class="fas fa-leaf me-2"></i>Farmer2Market
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
+                </li>
+
+                {% if current_user.is_authenticated %}
+                {% if current_user.role == 'FARMER' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('farmer.dashboard') }}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('farmer.products_list') }}">My Products</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('farmer.orders_list') }}">Orders</a></li>
+                {% elif current_user.role == 'BUYER' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.shop') }}">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.cart_view') }}">Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.dashboard') }}">My Orders</a></li>
+                {% elif current_user.role == 'ADMIN' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Panel</a></li>
+                {% elif current_user.role == 'DELIVERY' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('delivery.dashboard') }}">Deliveries</a></li>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i> {{ current_user.name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if current_user.role == 'FARMER' %}
+                        <li><a class="dropdown-item" href="{{ url_for('farmer.profile') }}">Profile</a></li>
+                        {% endif %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-light text-success ms-2 px-3 rounded-pill"
+                        href="{{ url_for('auth.register') }}">Register</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

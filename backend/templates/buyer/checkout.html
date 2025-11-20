@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Farmer2Market{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Checkout</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('buyer.checkout') }}" method="POST" id="checkoutForm">
+                    <h5 class="mb-3">Delivery Address</h5>
+
+                    <!-- Pincode Input -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Pincode *</label>
+                            <input type="text" name="pincode" id="pincode" class="form-control"
+                                placeholder="Enter 6-digit pincode" maxlength="6" required>
+                            <small class="text-muted">Enter pincode to auto-fill city</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City *</label>
+                            <input type="text" name="city" id="city" class="form-control"
+                                placeholder="City will auto-fill" readonly required>
+                        </div>
+                    </div>
+
+                    <!-- Full Address -->
+                    <div class="mb-3">
+                        <label class="form-label">Full Address *</label>
+                        <textarea name="address" id="address" class="form-control" rows="3" required
+                            placeholder="House No., Street, Landmark..."></textarea>
+                    </div>
+
+                    <!-- Map Location Picker -->
+                    <div class="mb-3">
+                        <label class="form-label">Delivery Location</label>
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-2" id="getCurrentLocation">
+                            <i class="fas fa-map-marker-alt"></i> Use Current Location
+                        </button>
+                        <div id="map" style="height: 300px; border-radius: 0.75rem; border: 2px solid #e5e7eb;"></div>
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+                        <small class="text-muted">Click on map or use current location to set delivery point</small>
+                    </div>
+
+                    <h5 class="mb-3 mt-4">Payment Method</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="payment" id="online" value="ONLINE" checked>
+                        <label class="form-check-label" for="online">
+                            <strong>💳 Online Payment (Razorpay)</strong>
+                            <br>
+                            <small class="text-muted">Pay securely with Credit/Debit Card, UPI, Net Banking</small>
+                        </label>
+                    </div>
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="radio" name="payment" id="cod" value="COD">
+                        <label class="form-check-label" for="cod">
+                            <strong>💵 Cash on Delivery (COD)</strong>
+                            <br>
+                            <small class="text-muted">Pay when you receive your order</small>
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check-circle"></i> Place Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Leaflet CSS & JS for Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Initialize map
+    let map = L.map('map').setView([20.5937, 78.9629], 5); // India center
+    let marker = null;
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Handle map click
+    map.on('click', function (e) {
+        setMarker(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Set marker function
+    function setMarker(lat, lng) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+        map.setView([lat, lng], 15);
+    }
+
+    // Get current location
+    document.getElementById('getCurrentLocation').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                setMarker(lat, lng);
+            }, function (error) {
+                alert('Unable to get your location. Please click on the map to set delivery location.');
+            });
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+
+    // Pincode lookup (India Postal API)
+    document.getElementById('pincode').addEventListener('input', function (e) {
+        const pincode = e.target.value;
+        if (pincode.length === 6) {
+            fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data[0].Status === 'Success') {
+                        const postOffice = data[0].PostOffice[0];
+                        document.getElementById('city').value = postOffice.District;
+
+                        // Try to center map on city (approximate)
+                        if (postOffice.District) {
+                            // You can add geocoding here if needed
+                        }
+                    } else {
+                        document.getElementById('city').value = '';
+                        alert('Invalid pincode. Please check and try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching pincode data:', error);
+                });
+        }
+    });
+
+    // Form validation
+    document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+        const lat = document.getElementById('latitude').value;
+        const lng = document.getElementById('longitude').value;
+
+        if (!lat || !lng) {
+            e.preventDefault();
+            alert('Please select delivery location on the map or use current location.');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

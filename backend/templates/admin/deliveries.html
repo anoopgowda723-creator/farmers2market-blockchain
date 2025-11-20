@@ -1,0 +1,119 @@
+{% extends "admin/layout_admin.html" %}
+
+{% block title %}Delivery Assignments | Admin{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Delivery Assignments</h1>
+            <p class="page-subtitle">
+                Assign delivery partners to new orders and monitor active deliveries.
+            </p>
+        </div>
+        <div class="badge-role">Admin · Delivery Control</div>
+    </div>
+
+    <!-- Orders waiting for assignment -->
+    <div class="section-card mt-4">
+        <div class="section-header">
+            <h2>Orders Waiting for Delivery Partner</h2>
+            <span class="section-note">Only paid / confirmed orders appear here.</span>
+        </div>
+
+        {% if pending_delivery_orders %}
+        <div class="table-wrapper">
+            <table class="fm-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Buyer</th>
+                        <th>Farmer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th class="text-right">Assign Partner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in pending_delivery_orders %}
+                    <tr>
+                        <td>{{ o.order_uuid or o.id }}</td>
+                        <td>{{ o.buyer.name if o.buyer else '-' }}</td>
+                        <td>{{ o.farmer.name if o.farmer else '-' }}</td>
+                        <td>₹{{ "%.2f"|format(o.total_amount) }}</td>
+                        <td>
+                            <span class="status-pill status-pill-warn">
+                                {{ o.status }}
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            <form method="post"
+                                  action="{{ url_for('admin.assign_delivery_partner', order_id=o.id) }}"
+                                  class="assign-form">
+                                <select name="delivery_partner_id" class="select-input" required>
+                                    <option value="" disabled selected>Select partner</option>
+                                    {% for d in delivery_partners %}
+                                    <option value="{{ d.id }}">
+                                        {{ d.name }} · {{ d.phone }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn-small btn-primary">
+                                    Assign
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="empty-text">No orders are waiting for delivery assignment.</p>
+        {% endif %}
+    </div>
+
+    <!-- Active deliveries -->
+    <div class="section-card mt-4">
+        <div class="section-header">
+            <h2>Active Deliveries</h2>
+            <span class="section-note">Track deliveries assigned to partners.</span>
+        </div>
+
+        {% if active_deliveries %}
+        <div class="table-wrapper">
+            <table class="fm-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Delivery Partner</th>
+                        <th>Status</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in active_deliveries %}
+                    <tr>
+                        <td>{{ d.order_id }}</td>
+                        <td>{{ d.delivery_partner.name if d.delivery_partner else '-' }}</td>
+                        <td>
+                            <span class="status-pill status-pill-info">
+                                {{ d.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {{ d.updated_at.strftime("%Y-%m-%d %H:%M") if d.updated_at else "-" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="empty-text">No active deliveries right now.</p>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="back-btn">← Back to Dashboard</a>
+
+</section>
+{% endblock %}

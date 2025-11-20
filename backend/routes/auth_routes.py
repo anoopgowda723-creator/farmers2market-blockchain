@@ -5,7 +5,8 @@ from extensions import db
 from models.user import User
 from models.otp_log import OtpLog
 from services.auth_service import hash_password, verify_password
-from services.otp_service import create_otp_for_user_all_channels
+from services.otp_service import create_sms_otp_for_user
+from flask_login import login_user, logout_user, current_user
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -83,8 +84,8 @@ def register():
             user.password_hash = hash_password(password)
             db.session.commit()
 
-        # Create OTP and send to email + phone
-        create_otp_for_user_all_channels(user.id)
+               # Create OTP and send via SMS only
+        create_sms_otp_for_user(user.id)
 
         return render_template(
             "auth/register.html",
@@ -93,6 +94,7 @@ def register():
             email=email,
             phone=phone,
         )
+
 
     # ---------- STEP 2: COMPLETE REGISTRATION (VERIFY OTP) ----------
     if action == "register":
@@ -193,34 +195,52 @@ def register():
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    """Render login page on GET, handle form submit on POST."""
-    if request.method == "GET":
-        return render_template("auth/login.html")
+    from models.user import User
+    from werkzeug.security import check_password_hash
+    from flask import request, render_template, redirect, url_for, flash, session
 
-    email = request.form.get("email")
-    password = request.form.get("password")
-    error = None
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-    if not email or not password:
-        error = "Please enter email and password."
-    else:
         user = User.query.filter_by(email=email).first()
-        if not user or not verify_password(password, user.password_hash):
-            error = "Invalid email or password."
-        elif not user.is_active:
-            error = "Your account is inactive. Contact support."
-        elif not user.is_approved:
-            error = "Your account is not verified yet. Please complete OTP verification."
 
-    if error:
-        return render_template("auth/login.html", error=error, form=request.form), 401
+        if not user or not check_password_hash(user.password_hash, password):
+            flash("Invalid email or password.", "danger")
+            return render_template("auth/login.html", form=request.form)
 
-    session["user_id"] = user.id
-    session["user_role"] = user.role
-    return redirect(url_for("main.home"))
+        if not user.is_active:
+            flash("Your account is not active yet. Please wait for admin approval.", "warning")
+            return render_template("auth/login.html", form=request.form)
+
+        # 🔹 This is the KEY step
+        login_user(user)  # tells Flask-Login "this is the logged in user"
+
+        # (optional) keep your old session-based values if you still use them
+        session["user_id"] = user.id
+        session["role"] = user.role
+
+        # redirect based on role
+        if user.role == "ADMIN":
+            return redirect(url_for("admin.dashboard"))
+        elif user.role == "FARMER":
+            return redirect(url_for("farmer.dashboard"))
+        elif user.role == "BUYER":
+            return redirect(url_for("buyer.dashboard"))
+            # or "buyer.shop" etc.
+        elif user.role == "DELIVERY":
+            return redirect(url_for("delivery.dashboard"))
+        else:
+            return redirect(url_for("main.home"))
+
+    return render_template("auth/login.html")
 
 
-@auth_bp.route("/logout", methods=["POST"])
+@auth_bp.route("/logout")
 def logout():
-    session.clear()
-    return jsonify({"message": "Logged out"}), 200
+    from flask import session, redirect, url_for, flash
+
+    logout_user()      # Flask-Login clear
+    session.clear()    # your custom session usage
+    flash("You have been logged out.", "success")
+    return redirect(url_for("main.home"))

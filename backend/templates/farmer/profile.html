@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Profile & Payouts | Farmer Dashboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/farmer.css') }}">
+
+<section class="page-shell">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Profile & Payment Details</h1>
+      <p class="page-subtitle">
+        Keep your contact, payout and warehouse information up to date.
+      </p>
+    </div>
+    <a href="{{ url_for('farmer.dashboard') }}" class="btn-soft">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <div class="section-card">
+    <form method="post" class="fm-form">
+      <!-- CSRF Token removed as we are using standard forms -->
+
+      <h2 class="section-subtitle">Basic Info</h2>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input name="name" id="name" value="{{ current_user.name or '' }}" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input name="phone" id="phone" value="{{ current_user.phone or '' }}" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Warehouse Address</label>
+        <textarea name="address" id="address" rows="3"
+          placeholder="Full address of your warehouse or pickup point">{{ current_user.address or '' }}</textarea>
+      </div>
+
+      <h2 class="section-subtitle mt-4">Warehouse Location</h2>
+      <p class="field-hint">
+        This location is shared with delivery partners after an order is placed.
+      </p>
+
+      <div class="form-grid-3">
+        <div class="form-group">
+          <label for="warehouse_lat">Latitude</label>
+          <input type="text" name="warehouse_lat" id="warehouse_lat" value="{{ current_user.warehouse_lat or '' }}"
+            readonly>
+        </div>
+        <div class="form-group">
+          <label for="warehouse_lng">Longitude</label>
+          <input type="text" name="warehouse_lng" id="warehouse_lng" value="{{ current_user.warehouse_lng or '' }}"
+            readonly>
+        </div>
+        <div class="form-group align-end">
+          <button type="button" id="btn-locate" class="btn-soft-full">
+            Use my current location
+          </button>
+        </div>
+      </div>
+
+      <h2 class="section-subtitle mt-4">Payout Details</h2>
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="bank_account_no">Bank Account Number</label>
+          <input name="bank_account_no" id="bank_account_no" value="{{ current_user.bank_account_no or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="ifsc_code">IFSC Code</label>
+          <input name="ifsc_code" id="ifsc_code" value="{{ current_user.ifsc_code or '' }}">
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="upi_id">UPI ID</label>
+          <input name="upi_id" id="upi_id" placeholder="example@upi" value="{{ current_user.upi_id or '' }}">
+        </div>
+        <div class="form-group">
+          <label for="wallet_address">Wallet Address (optional)</label>
+          <input name="wallet_address" id="wallet_address" value="{{ current_user.wallet_address or '' }}">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary-lg">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  document.getElementById("btn-locate").addEventListener("click", function () {
+    if (!navigator.geolocation) {
+      alert("Location is not supported on this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      document.getElementById("warehouse_lat").value = pos.coords.latitude.toFixed(6);
+      document.getElementById("warehouse_lng").value = pos.coords.longitude.toFixed(6);
+    }, function (err) {
+      alert("Could not get location: " + err.message);
+    });
+  });
+</script>
+{% endblock %}

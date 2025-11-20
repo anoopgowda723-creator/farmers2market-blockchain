@@ -1,0 +1,192 @@
+{% extends "admin/layout_admin.html" %}
+
+{% block title %}Admin Dashboard | FarmerMarket{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<section class="page-shell">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Admin Dashboard</h1>
+            <p class="page-subtitle">
+                Monitor users, products and orders across FarmerMarket.
+            </p>
+        </div>
+        <div class="badge-role">Logged in as Admin</div>
+    </div>
+
+    <!-- Top stats -->
+    <div class="cards-grid">
+        <div class="stat-card">
+            <p class="stat-label">Total Users</p>
+            <p class="stat-value">{{ total_users }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Farmers</p>
+            <p class="stat-value">{{ farmers_count }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Buyers</p>
+            <p class="stat-value">{{ buyers_count }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Delivery Partners</p>
+            <p class="stat-value">{{ delivery_count }}</p>
+        </div>
+    </div>
+
+    <div class="cards-grid mt-4">
+        <div class="stat-card">
+            <p class="stat-label">Total Orders</p>
+            <p class="stat-value">{{ total_orders }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Pending Products</p>
+            <p class="stat-value">{{ pending_products_count }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Pending Users</p>
+            <p class="stat-value">{{ pending_users_count }}</p>
+        </div>
+    </div>
+
+    <!-- Pending users -->
+    <div class="section-card mt-6">
+        <div class="section-header">
+            <h2>Pending User Approvals</h2>
+            <a href="{{ url_for('admin.users_list') }}" class="link-subtle">
+                View all users →
+            </a>
+        </div>
+
+        {% if pending_users %}
+            <div class="table-wrapper">
+                <table class="fm-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Registered At</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in pending_users %}
+                        <tr>
+                            <td>{{ u.name }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.phone }}</td>
+                            <td>{{ u.role }}</td>
+                            <td>{{ u.created_at.strftime("%Y-%m-%d %H:%M") if u.created_at else "-" }}</td>
+                            <td class="text-right">
+                                <form method="post"
+                                      action="{{ url_for('admin.approve_user', user_id=u.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn-small btn-primary" type="submit">Approve</button>
+                                </form>
+                                <form method="post"
+                                      action="{{ url_for('admin.deactivate_user', user_id=u.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn-small btn-outline" type="submit">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-text">No pending user approvals.</p>
+        {% endif %}
+    </div>
+
+    <!-- Pending products -->
+    <div class="section-card mt-4">
+        <div class="section-header">
+            <h2>Products Waiting for Approval</h2>
+            <a href="{{ url_for('admin.products_list') }}" class="link-subtle">
+                View all products →
+            </a>
+        </div>
+
+        {% if pending_products %}
+            <div class="table-wrapper">
+                <table class="fm-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Farmer</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Submitted At</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in pending_products %}
+                        <tr>
+                            <td>{{ p.name }}</td>
+                            <td>{{ p.farmer.name if p.farmer else "-" }}</td>
+                            <td>₹{{ "%.2f"|format(p.price) }}</td>
+                            <td>{{ p.stock }}</td>
+                            <td>{{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "-" }}</td>
+                            <td class="text-right">
+                                <form method="post"
+                                      action="{{ url_for('admin.approve_product', product_id=p.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn-small btn-primary" type="submit">Approve</button>
+                                </form>
+                                <form method="post"
+                                      action="{{ url_for('admin.reject_product', product_id=p.id) }}"
+                                      style="display:inline;">
+                                    <button class="btn-small btn-outline" type="submit">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-text">No products are waiting for approval.</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent orders -->
+    <div class="section-card">
+    <div class="section-header">
+        <h2>Delivery Overview</h2>
+        <a href="{{ url_for('admin.deliveries') }}">
+            Manage Deliveries →
+        </a>
+    </div>
+
+    {% if active_delivery_count == 0 %}
+        <p class="empty-text">No active deliveries.</p>
+    {% else %}
+    <table class="fm-table">
+        <thead>
+            <th>Order</th>
+            <th>Partner</th>
+            <th>Status</th>
+            <th>Updated</th>
+        </thead>
+        <tbody>
+            {% for d in active_deliveries %}
+                <tr>
+                    <td>{{ d.order_id }}</td>
+                    <td>{{ d.delivery_partner.name if d.delivery_partner else "Unassigned" }}</td>
+                    <td>{{ d.status }}</td>
+                    <td>{{ d.updated_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+
+</section>
+{% endblock %}

@@ -4,3 +4,5 @@ PyMySQL
 web3
 razorpay
 python-dotenv
+twilio
+flask-login

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}My Orders - Farmer2Market{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; padding: 2rem 1rem;">
+    <!-- Page Header -->
+    <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; color: #111827; margin-bottom: 0.5rem;">Orders</h1>
+            <p style="color: #6b7280; font-size: 1.125rem;">View and confirm orders placed for your products.</p>
+        </div>
+        <a href="{{ url_for('farmer.dashboard') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mb-4" style="display: flex; gap: 1rem; border-bottom: 2px solid #e5e7eb;">
+        <a href="{{ url_for('farmer.orders_list', tab='open') }}"
+            style="padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 600; border-bottom: 3px solid {{ '#10b981' if active_tab == 'open' else 'transparent' }}; color: {{ '#10b981' if active_tab == 'open' else '#6b7280' }}; margin-bottom: -2px;">
+            Open
+        </a>
+        <a href="{{ url_for('farmer.orders_list', tab='completed') }}"
+            style="padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 600; border-bottom: 3px solid {{ '#10b981' if active_tab == 'completed' else 'transparent' }}; color: {{ '#10b981' if active_tab == 'completed' else '#6b7280' }}; margin-bottom: -2px;">
+            Completed
+        </a>
+        <a href="{{ url_for('farmer.orders_list', tab='all') }}"
+            style="padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 600; border-bottom: 3px solid {{ '#10b981' if active_tab == 'all' else 'transparent' }}; color: {{ '#10b981' if active_tab == 'all' else '#6b7280' }}; margin-bottom: -2px;">
+            All
+        </a>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card">
+        <div class="card-body" style="padding: 0;">
+            {% if orders %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Buyer</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Placed At</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for o in orders %}
+                        <tr>
+                            <td><strong>{{ o.order_uuid or o.id }}</strong></td>
+                            <td>{{ o.buyer.name if o.buyer else '-' }}</td>
+                            <td><strong>₹{{ "%.2f"|format(o.total_amount) }}</strong></td>
+                            <td>
+                                <span class="badge badge-status-{{ o.status.lower() }}">
+                                    {{ o.status.replace('_', ' ').title() }}
+                                </span>
+                            </td>
+                            <td>{{ o.created_at.strftime("%Y-%m-%d %H:%M") if o.created_at else "-" }}</td>
+                            <td style="text-align: right;">
+                                <a href="{{ url_for('farmer.order_detail', order_id=o.id) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+
+                                {% if o.status == "PAID" %}
+                                <form method="post" action="{{ url_for('farmer.order_confirm', order_id=o.id) }}"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-check"></i> Confirm
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+                <h4 style="color: #6b7280; font-weight: 600;">No orders found</h4>
+                <p style="color: #9ca3af;">Orders matching this filter will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

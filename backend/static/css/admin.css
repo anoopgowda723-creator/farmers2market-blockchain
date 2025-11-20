@@ -1,0 +1,190 @@
+/* Page Shell */
+.page-shell {
+    width: 85%;
+    margin: 40px auto;
+    color: #fff;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.page-subtitle {
+    opacity: 0.7;
+}
+
+/* Global Body */
+body {
+    background: #0d1117;
+    color: white;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navbar */
+.admin-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background: #161b22;
+    border-bottom: 1px solid #222;
+}
+
+.admin-nav a {
+    color: #58a6ff;
+    margin-left: 20px;
+}
+
+.logout-btn {
+    color: #ff6961 !important;
+}
+
+/* Layout */
+.admin-content {
+    padding: 40px;
+}
+
+/* Cards Grid */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Stat Card */
+.stat-card {
+    background: #1c2128;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: left;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.stat-label {
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* Section Card */
+.section-card {
+    background: #1c2128;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 30px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Table */
+.fm-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fm-table th, .fm-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+}
+
+.fm-table th {
+    text-align: left;
+    opacity: 0.7;
+}
+
+/* Buttons */
+.btn-small {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #00c853;
+    color: #fff;
+    border: none;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #888;
+    color: #ccc;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #58a6ff;
+}
+
+.empty-text {
+    opacity: 0.6;
+    padding: 15px 0;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Margin Helpers */
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 18px; }
+.mt-6 { margin-top: 30px; }
+
+/* NEW: Select dropdown for assigning delivery */
+.select-input {
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    background: rgba(15, 23, 42, 0.95);
+    color: #e5e7eb;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    margin-right: 0.4rem;
+    min-width: 180px;
+}
+
+.select-input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+}
+
+.assign-form {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Status Pills */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-pill-warn {
+    background: rgba(234, 179, 8, 0.15);
+    color: #facc15;
+}
+
+.status-pill-info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+}

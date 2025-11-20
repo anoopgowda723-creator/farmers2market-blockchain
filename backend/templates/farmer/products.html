@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}My Products | FarmerMarket{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+<section class="page-shell">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">My Products</h1>
+            <p class="page-subtitle">
+                Manage the items you sell on FarmerMarket.
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('farmer.dashboard') }}" class="btn-small btn-outline">← Dashboard</a>
+            <a href="{{ url_for('farmer.product_create') }}" class="btn-small btn-primary">+ Add Product</a>
+        </div>
+    </div>
+
+    <div class="section-card">
+        {% if products %}
+            <div class="table-wrapper">
+                <table class="fm-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in products %}
+                        <tr>
+                            <td>{{ p.name }}</td>
+                            <td>₹{{ "%.2f"|format(p.price) }}</td>
+                            <td>{{ p.stock }}</td>
+                            <td><span class="badge-status badge-{{ p.status|lower }}">{{ p.status }}</span></td>
+                            <td>{{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "-" }}</td>
+                            <td class="text-right">
+                                <a href="{{ url_for('farmer.product_edit', product_id=p.id) }}" class="btn-small btn-outline">
+                                    Edit
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty-text">You have no products yet. Start by adding one.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

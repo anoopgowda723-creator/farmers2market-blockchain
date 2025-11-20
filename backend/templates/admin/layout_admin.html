@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<nav class="admin-nav">
+    <div class="logo">FARMERMARKET — ADMIN</div>
+    <div class="admin-menu">
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin.users_list') }}">Users</a>
+        <a href="{{ url_for('admin.products_list') }}">Products</a>
+        <a href="{{ url_for('admin.deliveries') }}">Deliveries</a>
+        <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a>
+    </div>
+</nav>
+
+<div class="admin-content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

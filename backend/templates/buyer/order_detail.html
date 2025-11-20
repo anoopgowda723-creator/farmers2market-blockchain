@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.id }} - Farmer2Market{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; padding: 2rem 1rem;">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{{ url_for('buyer.dashboard') }}" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Order Header -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.5rem;">Order #{{ order.id }}</h3>
+                    <p style="margin: 0.5rem 0 0 0; color: #6b7280;">
+                        Placed on {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </p>
+                </div>
+                <span class="badge badge-status-{{ order.status.lower() }}"
+                    style="font-size: 1rem; padding: 0.5rem 1rem;">
+                    {{ order.status.replace('_', ' ').title() }}
+                </span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-receipt"></i> Order Summary</h5>
+                    <p><strong>Order UUID:</strong> {{ order.order_uuid }}</p>
+                    <p><strong>Total Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                    <p><strong>Currency:</strong> {{ order.currency }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class="fas fa-map-marker-alt"></i> Delivery Address</h5>
+                    <p style="white-space: pre-line;">{{ order.delivery_address }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farmer & Delivery Partner Info -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tractor"></i> Farmer Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ order.farmer.name }}</p>
+                    <p><strong>Phone:</strong> {{ order.farmer.phone }}</p>
+                    <p><strong>Email:</strong> {{ order.farmer.email }}</p>
+                    {% if order.farmer.warehouse_location %}
+                    <p><strong>Pickup Location:</strong><br>{{ order.farmer.warehouse_location }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shipping-fast"></i> Delivery Partner</h5>
+                </div>
+                <div class="card-body">
+                    {% if order.delivery_partner %}
+                    <p><strong>Name:</strong> {{ order.delivery_partner.name }}</p>
+                    <p><strong>Phone:</strong> {{ order.delivery_partner.phone }}</p>
+                    <p><strong>Email:</strong> {{ order.delivery_partner.email }}</p>
+                    {% if order.delivery %}
+                    <p><strong>Delivery Status:</strong>
+                        <span class="badge badge-info">{{ order.delivery.status }}</span>
+                    </p>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-muted">
+                        <i class="fas fa-clock"></i> Delivery partner not assigned yet
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5><i class="fas fa-shopping-basket"></i> Order Items</h5>
+        </div>
+        <div class="card-body" style="padding: 0;">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }} {{ item.product.unit_label or 'kg' }}</td>
+                            <td>₹{{ "%.2f"|format(item.price) }}</td>
+                            <td><strong>₹{{ "%.2f"|format(item.price * item.quantity) }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                        <tr style="background: #f9fafb; font-weight: 700;">
+                            <td colspan="3" style="text-align: right;">Total:</td>
+                            <td>₹{{ "%.2f"|format(order.total_amount) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Timeline -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-history"></i> Order Timeline</h5>
+        </div>
+        <div class="card-body">
+            <div class="timeline">
+                <div
+                    class="timeline-item {% if order.status in ['PENDING_PAYMENT', 'PAID', 'FARMER_CONFIRMED', 'ASSIGNED_DELIVERY', 'OUT_FOR_DELIVERY', 'DELIVERED', 'COMPLETED'] %}completed{% endif %}">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Order Placed</h6>
+                        <p>{{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                </div>
+
+                {% if order.status in ['PAID', 'FARMER_CONFIRMED', 'ASSIGNED_DELIVERY', 'OUT_FOR_DELIVERY', 'DELIVERED',
+                'COMPLETED'] %}
+                <div class="timeline-item completed">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Payment Confirmed</h6>
+                        <p>Order paid successfully</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if order.status in ['FARMER_CONFIRMED', 'ASSIGNED_DELIVERY', 'OUT_FOR_DELIVERY', 'DELIVERED',
+                'COMPLETED'] %}
+                <div class="timeline-item completed">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Farmer Confirmed</h6>
+                        <p>Farmer accepted your order</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if order.status in ['ASSIGNED_DELIVERY', 'OUT_FOR_DELIVERY', 'DELIVERED', 'COMPLETED'] %}
+                <div class="timeline-item completed">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Delivery Partner Assigned</h6>
+                        <p>{{ order.delivery_partner.name if order.delivery_partner else 'Assigned' }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if order.status in ['OUT_FOR_DELIVERY', 'DELIVERED', 'COMPLETED'] %}
+                <div class="timeline-item completed">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Out for Delivery</h6>
+                        <p>Your order is on the way!</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if order.status in ['DELIVERED', 'COMPLETED'] %}
+                <div class="timeline-item completed">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <h6>Delivered</h6>
+                        <p>Order delivered successfully</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e5e7eb;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -1.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #e5e7eb;
+        border: 2px solid #fff;
+    }
+
+    .timeline-item.completed .timeline-marker {
+        background: #10b981;
+    }
+
+    .timeline-content h6 {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.25rem;
+    }
+
+    .timeline-content p {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+</style>
+{% endblock %}
