@@ -2,47 +2,57 @@
 {% block title %}Payment | Farmer2Market{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
 
-<section class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Complete Payment</h4>
+<div class="container" style="max-width: 800px; padding: 2rem 1rem;">
+    <div class="card">
+        <div class="card-header" style="background: var(--gradient-buyer); color: white;">
+            <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Complete Payment</h4>
+        </div>
+        <div class="card-body">
+            <h5 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">Order Summary</h5>
+            <table style="width: 100%; margin-bottom: 1.5rem;">
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <th style="padding: 0.75rem 0; color: #6b7280; font-weight: 600;">Order ID:</th>
+                    <td style="padding: 0.75rem 0; text-align: right; font-weight: 600;">{{ order.order_uuid }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <th style="padding: 0.75rem 0; color: #6b7280; font-weight: 600;">Total Amount:</th>
+                    <td style="padding: 0.75rem 0; text-align: right;">
+                        <span style="font-size: 1.5rem; font-weight: 800; color: var(--role-buyer);">₹{{
+                            "%.2f"|format(order.total_amount) }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="padding: 0.75rem 0; color: #6b7280; font-weight: 600; vertical-align: top;">Delivery
+                        Address:</th>
+                    <td style="padding: 0.75rem 0; text-align: right;">{{ order.delivery_address }}</td>
+                </tr>
+            </table>
+
+            <div class="alert alert-info">
+                <div class="alert-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
-                <div class="card-body">
-                    <h5>Order Summary</h5>
-                    <table class="table">
-                        <tr>
-                            <th>Order ID:</th>
-                            <td>{{ order.order_uuid }}</td>
-                        </tr>
-                        <tr>
-                            <th>Total Amount:</th>
-                            <td class="text-success fw-bold">₹{{ "%.2f"|format(order.total_amount) }}</td>
-                        </tr>
-                        <tr>
-                            <th>Delivery Address:</th>
-                            <td>{{ order.delivery_address }}</td>
-                        </tr>
-                    </table>
-
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        You will be redirected to Razorpay's secure payment gateway
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <button id="rzp-button" class="btn btn-success btn-lg">
-                            <i class="fas fa-lock me-2"></i>Pay ₹{{ "%.2f"|format(order.total_amount) }}
-                        </button>
-                    </div>
+                <div class="alert-content">
+                    <p class="alert-title">Secure Payment</p>
+                    <p>You will be redirected to Razorpay's secure payment gateway. Your payment information is
+                        encrypted and safe.</p>
                 </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button id="rzp-button" class="btn btn-primary btn-lg" style="flex: 1;">
+                    <i class="fas fa-lock me-2"></i>Pay ₹{{ "%.2f"|format(order.total_amount) }}
+                </button>
+                <a href="{{ url_for('payment.cancel', order_id=order.id) }}" class="btn btn-outline btn-lg"
+                    onclick="return confirm('Are you sure you want to cancel this payment?');">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
@@ -85,12 +95,14 @@
                 "contact": "{{ current_user.phone }}"
             },
             "theme": {
-                "color": "#28a745"
+                "color": "#8b5cf6"
             },
             "modal": {
                 "ondismiss": function () {
-                    alert('Payment cancelled. You can try again from your orders page.');
-                    window.location.href = '{{ url_for("buyer.dashboard") }}';
+                    // User closed the payment modal
+                    if (confirm('Payment cancelled. Do you want to remove this order?')) {
+                        window.location.href = '{{ url_for("payment.cancel", order_id=order.id) }}';
+                    }
                 }
             }
         };

@@ -20,6 +20,13 @@
     --gradient-primary: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     --gradient-light: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    --gradient-admin: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    --gradient-buyer: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    --gradient-farmer: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --gradient-delivery: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --gradient-sunset: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    --gradient-ocean: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    --gradient-forest: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
 
     /* Accent Colors */
     --accent-blue: #3b82f6;
@@ -29,6 +36,20 @@
     --accent-yellow: #fbbf24;
     --accent-pink: #ec4899;
     --accent-teal: #14b8a6;
+
+    /* Role-Specific Colors */
+    --role-admin: #3b82f6;
+    --role-admin-light: #60a5fa;
+    --role-admin-dark: #2563eb;
+    --role-buyer: #8b5cf6;
+    --role-buyer-light: #a78bfa;
+    --role-buyer-dark: #7c3aed;
+    --role-farmer: #10b981;
+    --role-farmer-light: #34d399;
+    --role-farmer-dark: #059669;
+    --role-delivery: #f59e0b;
+    --role-delivery-light: #fbbf24;
+    --role-delivery-dark: #d97706;
 
     /* Neutral Colors - Light Mode */
     --white: #ffffff;

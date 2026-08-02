@@ -20,10 +20,17 @@ class Delivery(db.Model):
     )
 
     status = db.Column(
-        db.Enum("ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY", "DELIVERED"),
-        nullable=False,
-        default="ASSIGNED",
-    )
+    db.Enum(
+        "ASSIGNED",
+        "ACCEPTED",
+        "PICKED_UP",
+        "ON_THE_WAY",
+        "DELIVERED",
+        name="delivery_status"
+    ),
+    nullable=False,
+    default="ASSIGNED",
+)
 
     proof_image_url = db.Column(db.String(255), nullable=True)
     proof_hash_on_chain = db.Column(db.String(191), nullable=True)

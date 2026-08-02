@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Farmer Dashboard - Home | Farmer2Market{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+
+<div class="container" style="max-width: 1400px; padding: 2rem 1rem;">
+    <!-- Role Introduction Hero -->
+    <div
+        style="background: var(--gradient-farmer); padding: 3rem 2rem; border-radius: var(--radius-3xl); margin-bottom: 2rem; color: white;">
+        <div style="max-width: 900px;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div
+                    style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: var(--radius-2xl); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                    🌾
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.25rem;">Welcome back,</p>
+                    <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0;">{{ current_user.name }}</h1>
+                </div>
+            </div>
+            <div
+                style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: var(--radius-xl); backdrop-filter: blur(10px);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Your Role: Farmer</h2>
+                <p style="font-size: 1rem; line-height: 1.6; opacity: 0.95; margin: 0;">
+                    As a farmer on Farmer2Market, you can directly sell your produce to buyers without intermediaries.
+                    List your products, manage inventory, receive orders, and get paid instantly upon delivery
+                    verification through our secure blockchain-based escrow system. Maximize your profits and reach more
+                    customers.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-bolt" style="color: var(--role-farmer);"></i> Manage Your Farm
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <a href="{{ url_for('farmer.add_product') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-farmer);">
+                    ➕
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Add Product</h3>
+                    <p class="action-card-description">List new produce for sale</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('farmer.products') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-farmer);">
+                    📦
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">My Products</h3>
+                    <p class="action-card-description">Manage your inventory</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('farmer.orders') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-farmer);">
+                    📋
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Orders</h3>
+                    <p class="action-card-description">View & fulfill orders</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('farmer.settlements') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-farmer);">
+                    💰
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Earnings</h3>
+                    <p class="action-card-description">Track your settlements</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-chart-bar" style="color: var(--role-farmer);"></i> Sales Overview
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Total Sales</p>
+                        <p class="stat-card-value">₹{{ "%.0f"|format(total_sales) }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--role-farmer);">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">All time revenue</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Pending Orders</p>
+                        <p class="stat-card-value">{{ pending_orders }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(251, 191, 36, 0.1); color: var(--accent-yellow);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Awaiting confirmation</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Products Listed</p>
+                        <p class="stat-card-value">{{ total_products }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Active inventory</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Completed</p>
+                        <p class="stat-card-value">{{ completed_orders }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--status-success);">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Successfully delivered</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Orders -->
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827;">
+                <i class="fas fa-bell" style="color: var(--accent-yellow);"></i> Orders Requiring Action
+            </h2>
+            <a href="{{ url_for('farmer.orders') }}" class="btn btn-outline-primary">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        {% if pending_orders_list %}
+        <div class="card">
+            <div class="table-wrapper" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(16, 185, 129, 0.05);">
+                        <tr>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Order ID</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Date</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Buyer</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Amount</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Status</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in pending_orders_list %}
+                        <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.15s;">
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">#{{ order.id }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ order.created_at.strftime('%b %d, %Y')
+                                }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #111827;">{{ order.buyer.name }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">₹{{
+                                "%.2f"|format(order.total_amount) }}</td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <span class="badge badge-status-{{ order.status.lower() }}">
+                                    {{ order.status.replace('_', ' ').title() }}
+                                </span>
+                            </td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <a href="{{ url_for('farmer.order_detail', order_id=order.id) }}"
+                                    class="btn btn-sm btn-primary">
+                                    <i class="fas fa-check"></i> Process
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">✅</div>
+            <h3 class="empty-state-title">All caught up!</h3>
+            <p class="empty-state-description">No pending orders at the moment</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Product Performance -->
+    {% if top_products %}
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-trophy" style="color: var(--accent-yellow);"></i> Your Products
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+            {% for product in top_products[:4] %}
+            <div class="card">
+                <div style="position: relative; padding-top: 75%; overflow: hidden; background: #f3f4f6;">
+                    {% if product.image1_url %}
+                    <img src="{{ product.image1_url }}" alt="{{ product.name }}"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                    <div
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                        🌾
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h4 style="font-size: 1.125rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">{{
+                        product.name }}</h4>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--role-farmer);">₹{{
+                            "%.2f"|format(product.price) }}</span>
+                        <span class="badge badge-success">{{ product.stock }} in stock</span>
+                    </div>
+                    <a href="{{ url_for('farmer.product_edit', product_id=product.id) }}"
+                        class="btn btn-sm btn-outline-primary" style="width: 100%;">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Settlement Summary -->
+    {% if pending_settlement > 0 %}
+    <div class="alert alert-info">
+        <div class="alert-icon">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="alert-content">
+            <p class="alert-title">Pending Settlement</p>
+            <p>You have <strong>₹{{ "%.2f"|format(pending_settlement) }}</strong> pending for settlement. Funds will be
+                transferred within 2-3 business days after order completion.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

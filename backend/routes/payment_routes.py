@@ -167,3 +167,25 @@ def failure(order_id):
     """Payment failure page"""
     order = Order.query.filter_by(id=order_id, buyer_id=current_user.id).first_or_404()
     return render_template("buyer/payment_failure.html", order=order)
+
+
+@payment_bp.route("/cancel/<int:order_id>")
+@login_required
+@role_required("BUYER")
+def cancel(order_id):
+    """Handle payment cancellation"""
+    order = Order.query.filter_by(id=order_id, buyer_id=current_user.id).first_or_404()
+    
+    # Only cancel if payment is still pending
+    if order.status == "PENDING_PAYMENT":
+        # Delete the order and its items
+        from models.order import OrderItem
+        OrderItem.query.filter_by(order_id=order.id).delete()
+        db.session.delete(order)
+        db.session.commit()
+        
+        flash("Payment cancelled. Order has been removed.", "info")
+    else:
+        flash("Cannot cancel this order.", "warning")
+    
+    return redirect(url_for("buyer.cart_view"))

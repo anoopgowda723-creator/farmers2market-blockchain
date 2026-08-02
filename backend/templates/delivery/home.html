@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}Delivery Dashboard - Home | Farmer2Market{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+
+<div class="container" style="max-width: 1400px; padding: 2rem 1rem;">
+    <!-- Role Introduction Hero -->
+    <div
+        style="background: var(--gradient-delivery); padding: 3rem 2rem; border-radius: var(--radius-3xl); margin-bottom: 2rem; color: white;">
+        <div style="max-width: 900px;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div
+                    style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: var(--radius-2xl); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                    🚚
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.25rem;">Welcome back,</p>
+                    <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0;">{{ current_user.name }}</h1>
+                </div>
+            </div>
+            <div
+                style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: var(--radius-xl); backdrop-filter: blur(10px);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Your Role: Delivery Partner
+                </h2>
+                <p style="font-size: 1rem; line-height: 1.6; opacity: 0.95; margin: 0;">
+                    As a delivery partner on Farmer2Market, you connect farmers and buyers by ensuring timely and safe
+                    delivery of fresh produce. Browse available deliveries, accept orders, update your location in
+                    real-time, and submit proof of delivery. Earn competitive fees for each successful delivery while
+                    maintaining high service standards.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-bolt" style="color: var(--role-delivery);"></i> Delivery Management
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <a href="{{ url_for('delivery.available_deliveries') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-delivery);">
+                    📋
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Available Deliveries</h3>
+                    <p class="action-card-description">Browse new delivery orders</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('delivery.my_deliveries') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-delivery);">
+                    🚚
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">My Deliveries</h3>
+                    <p class="action-card-description">Active & completed orders</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('delivery.earnings') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-delivery);">
+                    💰
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Earnings</h3>
+                    <p class="action-card-description">Track your income</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('delivery.profile') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-delivery);">
+                    📍
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Update Location</h3>
+                    <p class="action-card-description">Set your availability</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-chart-bar" style="color: var(--role-delivery);"></i> Performance Overview
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Total Earnings</p>
+                        <p class="stat-card-value">₹{{ "%.0f"|format(total_earnings) }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(245, 158, 11, 0.1); color: var(--role-delivery);">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">All time earnings</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Active Deliveries</p>
+                        <p class="stat-card-value">{{ active_deliveries }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-blue);">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">In progress now</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Completed</p>
+                        <p class="stat-card-value">{{ completed_deliveries }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--status-success);">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Successfully delivered</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Success Rate</p>
+                        <p class="stat-card-value">{{ success_rate }}%</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--status-success);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Delivery performance</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Deliveries -->
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827;">
+                <i class="fas fa-shipping-fast" style="color: var(--role-delivery);"></i> Active Deliveries
+            </h2>
+            <a href="{{ url_for('delivery.my_deliveries') }}" class="btn btn-outline-primary">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        {% if active_deliveries_list %}
+        <div class="grid grid-cols-2 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+            {% for delivery in active_deliveries_list %}
+            <div class="card">
+                <div class="card-header" style="background: var(--gradient-delivery); color: white;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.25rem;">Order #{{
+                                delivery.order_id }}</p>
+                            <h4 style="font-size: 1.25rem; font-weight: 700;">{{ delivery.order.buyer.name }}</h4>
+                        </div>
+                        <span class="badge badge-status-{{ delivery.status.lower() }}"
+                            style="background: rgba(255,255,255,0.2); color: white;">
+                            {{ delivery.status.replace('_', ' ').title() }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="margin-bottom: 1rem;">
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--role-delivery);"></i> Delivery Address
+                        </p>
+                        <p style="font-size: 0.95rem; color: #111827; font-weight: 500;">
+                            {{ delivery.order.delivery_address }}
+                        </p>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">
+                            <i class="fas fa-phone" style="color: var(--role-delivery);"></i> Contact
+                        </p>
+                        <p style="font-size: 0.95rem; color: #111827; font-weight: 500;">
+                            {{ delivery.order.buyer.phone }}
+                        </p>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                        <div>
+                            <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">Delivery Fee</p>
+                            <p style="font-size: 1.25rem; font-weight: 700; color: var(--role-delivery);">₹{{
+                                "%.2f"|format(delivery.delivery_fee) if delivery.delivery_fee else '50.00' }}</p>
+                        </div>
+                        <a href="{{ url_for('delivery.delivery_detail', delivery_id=delivery.id) }}"
+                            class="btn btn-primary">
+                            <i class="fas fa-arrow-right"></i> Manage
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🚚</div>
+            <h3 class="empty-state-title">No active deliveries</h3>
+            <p class="empty-state-description">Check available deliveries to start earning!</p>
+            <div class="empty-state-action">
+                <a href="{{ url_for('delivery.available_deliveries') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search"></i> Browse Available Deliveries
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Earnings -->
+    {% if recent_earnings %}
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-money-bill-wave" style="color: var(--status-success);"></i> Recent Earnings
+        </h2>
+        <div class="card">
+            <div class="table-wrapper" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(245, 158, 11, 0.05);">
+                        <tr>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Order ID</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Date</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Customer</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Delivery Fee</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for earning in recent_earnings %}
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">#{{ earning.order_id }}
+                            </td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ earning.completed_at.strftime('%b %d,
+                                %Y') if earning.completed_at else '-' }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #111827;">{{ earning.order.buyer.name }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">₹{{
+                                "%.2f"|format(earning.delivery_fee) if earning.delivery_fee else '50.00' }}</td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check"></i> Paid
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Performance Tip -->
+    <div class="alert alert-info">
+        <div class="alert-icon">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="alert-content">
+            <p class="alert-title">Performance Tip</p>
+            <p>Maintain a high success rate and quick delivery times to get priority access to high-value deliveries!
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

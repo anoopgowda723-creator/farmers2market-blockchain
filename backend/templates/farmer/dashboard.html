@@ -7,20 +7,25 @@
 <section class="page-shell">
 
   <!-- Page header -->
-  <div class="page-header">
+  <div class="page-header" style="margin-bottom: 2rem;">
     <div>
-      <p class="eyebrow">Farmer Dashboard</p>
-      <h1 class="page-title">Welcome, {{ current_user.name or 'Farmer' }} 👋</h1>
-      <p class="page-subtitle">
+      <p class="eyebrow"
+        style="font-size: 0.875rem; color: #10b981; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">
+        FARMER DASHBOARD</p>
+      <h1 class="page-title" style="font-size: 2.5rem; font-weight: 800; color: #111827; margin-bottom: 0.75rem;">
+        Welcome, {{ current_user.name or 'Farmer' }} 👋</h1>
+      <p class="page-subtitle" style="font-size: 1.125rem; color: #6b7280; line-height: 1.6;">
         Your farm is your factory. Manage all your products, stock and payouts from one place.
       </p>
     </div>
 
-    <div class="page-header-actions">
-      <a href="{{ url_for('farmer.product_create') }}" class="btn-primary-lg">
+    <div class="page-header-actions" style="display: flex; gap: 1rem; align-items: center;">
+      <a href="{{ url_for('farmer.product_create') }}" class="btn-primary-lg"
+        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
         + Add New Product
       </a>
-      <a href="{{ url_for('farmer.profile') }}" class="btn-soft">
+      <a href="{{ url_for('farmer.profile') }}" class="btn-soft"
+        style="background: #f3f4f6; color: #374151; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
         Profile &amp; Payouts
       </a>
     </div>
@@ -28,10 +33,12 @@
 
   <!-- Alerts / reminders -->
   {% if payout_missing or location_missing %}
-  <div class="alert-banner alert-warning">
+  <div class="alert-banner alert-warning" id="profile-alert"
+    style="background: #fef3c7; border: 2px solid #fbbf24; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h3>Complete your profile to start receiving orders</h3>
-      <ul>
+      <h3 style="font-size: 1.125rem; font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Complete your profile to
+        start receiving orders</h3>
+      <ul style="margin: 0; padding-left: 1.5rem; color: #78350f;">
         {% if payout_missing %}
         <li>Add your bank / UPI details so we can send you payouts.</li>
         {% endif %}
@@ -40,7 +47,8 @@
         {% endif %}
       </ul>
     </div>
-    <a href="{{ url_for('farmer.profile') }}" class="btn-primary-sm">
+    <a href="{{ url_for('farmer.profile') }}" class="btn-primary-sm"
+      style="background: #10b981; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; white-space: nowrap;">
       Update now
     </a>
   </div>
@@ -56,7 +64,7 @@
     <div class="stat-card">
       <p class="stat-label">Live Products</p>
       <p class="stat-value">{{ live_count }}</p>
-      <p class="stat-hint">Approved & visible to buyers</p>
+      <p class="stat-hint">Approved &amp; visible to buyers</p>
     </div>
     <div class="stat-card">
       <p class="stat-label">Pending Approval</p>
@@ -122,7 +130,6 @@
             <td>{{ p.created_at.strftime("%Y-%m-%d") if p.created_at else "-" }}</td>
             <td class="text-right">
               <a href="{{ url_for('farmer.product_edit', product_id=p.id) }}" class="btn-table-link">Edit</a>
-              <!-- Later you can add deactivate or view details -->
             </td>
           </tr>
           {% endfor %}
@@ -131,7 +138,7 @@
     </div>
     {% else %}
     <p class="empty-text">
-      You haven’t listed any products yet. Start by adding your first crop or item.
+      You haven't listed any products yet. Start by adding your first crop or item.
     </p>
     <a href="{{ url_for('farmer.product_create') }}" class="btn-primary-lg">
       + Add New Product
@@ -140,4 +147,35 @@
     {% endif %}
   </div>
 </section>
+
+<script>
+  // Auto-dismiss flash messages after profile update
+  document.addEventListener('DOMContentLoaded', function () {
+    const flashMessages = document.querySelectorAll('.alert-success, .alert-info');
+    flashMessages.forEach(function (message) {
+      setTimeout(function () {
+        message.style.transition = 'opacity 0.5s ease';
+        message.style.opacity = '0';
+        setTimeout(function () {
+          message.remove();
+        }, 500);
+      }, 3000); // Dismiss after 3 seconds
+    });
+
+    // Check if profile was just updated (from URL parameter)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('updated') === 'true') {
+      const profileAlert = document.getElementById('profile-alert');
+      if (profileAlert) {
+        setTimeout(function () {
+          profileAlert.style.transition = 'opacity 0.5s ease';
+          profileAlert.style.opacity = '0';
+          setTimeout(function () {
+            profileAlert.remove();
+          }, 500);
+        }, 2000);
+      }
+    }
+  });
+</script>
 {% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Delivery Partner | Farmer2Market{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 2rem 1rem;">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h1 style="font-size: 2.5rem; font-weight: 800; color: #111827;">My Profile</h1>
+        <p style="font-size: 1.125rem; color: #6b7280;">Manage your account information</p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card" style="border-radius: 1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+        <div class="card-header"
+            style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 1.5rem; border-radius: 1rem 1rem 0 0;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; margin: 0;">{{ current_user.name }}</h3>
+                    <p style="font-size: 0.875rem; opacity: 0.9; margin: 0;">Delivery Partner</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+            <form method="POST" action="{{ url_for('delivery.profile') }}">
+                <div class="mb-4">
+                    <label for="name" class="form-label"
+                        style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">Full
+                        Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ current_user.name }}"
+                        required
+                        style="padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 1rem;">
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="form-label"
+                        style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">Email
+                        Address</label>
+                    <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled
+                        style="padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 1rem; background: #f9fafb; color: #6b7280;">
+                    <small style="color: #6b7280; font-size: 0.875rem;">Email cannot be changed</small>
+                </div>
+
+                <div class="mb-4">
+                    <label for="phone" class="form-label"
+                        style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">Phone
+                        Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone"
+                        value="{{ current_user.phone or '' }}" required
+                        style="padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 1rem;">
+                    <small style="color: #6b7280; font-size: 0.875rem;">This number will be shared with customers for
+                        delivery coordination</small>
+                </div>
+
+                <div class="mb-4">
+                    <label for="address" class="form-label"
+                        style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">Current
+                        Location/Base Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="3"
+                        style="padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 1rem;">{{ current_user.address or '' }}</textarea>
+                    <small style="color: #6b7280; font-size: 0.875rem;">Your base location for delivery
+                        assignments</small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <a href="{{ url_for('delivery.dashboard') }}" class="btn btn-outline-secondary"
+                        style="padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600;">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary"
+                        style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Information -->
+    <div class="card mt-4" style="border-radius: 1rem;">
+        <div class="card-body" style="padding: 1.5rem;">
+            <h4 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin-bottom: 1rem;">Account Information
+            </h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Account Type</p>
+                    <p style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0;">{{ current_user.role }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Partner Since</p>
+                    <p style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0;">{{
+                        current_user.created_at.strftime('%B %Y') if current_user.created_at else 'N/A' }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Account Status</p>
+                    <p style="font-size: 1rem; font-weight: 600; margin: 0;">
+                        {% if current_user.is_active %}
+                        <span style="color: #10b981;"><i class="fas fa-check-circle"></i> Active</span>
+                        {% else %}
+                        <span style="color: #ef4444;"><i class="fas fa-times-circle"></i> Inactive</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delivery Tips -->
+    <div class="alert alert-info mt-4"
+        style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 0.75rem; padding: 1.5rem;">
+        <div style="display: flex; gap: 1rem;">
+            <div style="flex-shrink: 0;">
+                <i class="fas fa-info-circle" style="font-size: 1.5rem; color: #3b82f6;"></i>
+            </div>
+            <div>
+                <h5 style="font-weight: 700; color: #1e40af; margin-bottom: 0.5rem;">Profile Tips</h5>
+                <ul style="margin: 0; padding-left: 1.25rem; color: #1e40af;">
+                    <li>Keep your phone number updated for customer communication</li>
+                    <li>Update your base location to get nearby delivery assignments</li>
+                    <li>Maintain accurate contact information for smooth operations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

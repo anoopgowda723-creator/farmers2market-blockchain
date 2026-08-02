@@ -50,6 +50,62 @@ def _save_image(file_storage):
 
 # ---------- Dashboard ----------
 
+@farmer_bp.route("/home")
+@login_required
+@role_required("FARMER")
+def home():
+    # Calculate total sales
+    total_sales = db.session.query(db.func.sum(Order.total_amount)).filter_by(
+        farmer_id=current_user.id,
+        status="DELIVERED"
+    ).scalar() or 0
+    
+    # Pending orders count
+    pending_orders = Order.query.filter_by(farmer_id=current_user.id).filter(
+        Order.status.in_(["PAID", "PENDING_PAYMENT"])
+    ).count()
+    
+    # Total products
+    total_products = Product.query.filter_by(farmer_id=current_user.id, status="APPROVED").count()
+    
+    # Completed orders
+    completed_orders = Order.query.filter_by(farmer_id=current_user.id, status="DELIVERED").count()
+    
+    # Pending orders list (for display)
+    pending_orders_list = (
+        Order.query.filter_by(farmer_id=current_user.id)
+        .filter(Order.status.in_(["PAID", "PENDING_PAYMENT"]))
+        .order_by(Order.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    
+    # Top performing products (by number of orders)
+    top_products = (
+        Product.query.filter_by(farmer_id=current_user.id, status="APPROVED")
+        .order_by(Product.created_at.desc())
+        .limit(4)
+        .all()
+    )
+    
+    # Pending settlement (simplified - you can enhance this)
+    pending_settlement = db.session.query(db.func.sum(Order.total_amount)).filter_by(
+        farmer_id=current_user.id
+    ).filter(
+        Order.status.in_(["DELIVERED", "OUT_FOR_DELIVERY"])
+    ).scalar() or 0
+    
+    return render_template(
+        "farmer/home.html",
+        total_sales=total_sales,
+        pending_orders=pending_orders,
+        total_products=total_products,
+        completed_orders=completed_orders,
+        pending_orders_list=pending_orders_list,
+        top_products=top_products,
+        pending_settlement=pending_settlement
+    )
+
 @farmer_bp.route("/dashboard")
 @login_required
 @role_required("FARMER")
@@ -367,3 +423,39 @@ def order_confirm(order_id):
         flash("Order confirmed!", "success")
     
     return redirect(url_for("farmer.orders_list", tab="open"))
+
+# ---------- Settlements ----------
+
+@farmer_bp.route("/settlements")
+@login_required
+@role_required("FARMER")
+def settlements():
+    # For now, render a simple settlements page
+    # You can expand this with a proper Settlement model
+    completed_orders = (
+        Order.query.filter_by(farmer_id=current_user.id, status="DELIVERED")
+        .order_by(Order.created_at.desc())
+        .all()
+    )
+    return render_template("farmer/settlements.html", orders=completed_orders)
+
+# Alias for add_product
+@farmer_bp.route("/add_product", methods=["GET", "POST"])
+@login_required
+@role_required("FARMER")
+def add_product():
+    return product_create()
+
+# Alias for products
+@farmer_bp.route("/products")
+@login_required
+@role_required("FARMER")
+def products():
+    return products_list()
+
+# Alias for orders
+@farmer_bp.route("/orders")
+@login_required
+@role_required("FARMER")
+def orders():
+    return orders_list()

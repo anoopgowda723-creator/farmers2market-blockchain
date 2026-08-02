@@ -1,58 +1,97 @@
 {% extends "base.html" %}
-{% block title %}My Products | FarmerMarket{% endblock %}
+{% block title %}My Products | Farmer2Market{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
 
-<section class="page-shell">
-    <div class="page-header">
-        <div>
-            <h1 class="page-title">My Products</h1>
-            <p class="page-subtitle">
-                Manage the items you sell on FarmerMarket.
-            </p>
-        </div>
-        <div>
-            <a href="{{ url_for('farmer.dashboard') }}" class="btn-small btn-outline">← Dashboard</a>
-            <a href="{{ url_for('farmer.product_create') }}" class="btn-small btn-primary">+ Add Product</a>
-        </div>
-    </div>
-
-    <div class="section-card">
-        {% if products %}
-            <div class="table-wrapper">
-                <table class="fm-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for p in products %}
-                        <tr>
-                            <td>{{ p.name }}</td>
-                            <td>₹{{ "%.2f"|format(p.price) }}</td>
-                            <td>{{ p.stock }}</td>
-                            <td><span class="badge-status badge-{{ p.status|lower }}">{{ p.status }}</span></td>
-                            <td>{{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "-" }}</td>
-                            <td class="text-right">
-                                <a href="{{ url_for('farmer.product_edit', product_id=p.id) }}" class="btn-small btn-outline">
-                                    Edit
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+<div class="container" style="max-width: 1400px; padding: 2rem 1rem;">
+    <!-- Page Header -->
+    <div style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                    <i class="fas fa-box" style="color: var(--role-farmer);"></i> My Products
+                </h1>
+                <p style="color: #6b7280; font-size: 1rem;">
+                    Manage the items you sell on Farmer2Market.
+                </p>
             </div>
-        {% else %}
-            <p class="empty-text">You have no products yet. Start by adding one.</p>
-        {% endif %}
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="{{ url_for('farmer.dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+                <a href="{{ url_for('farmer.product_create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Product
+                </a>
+            </div>
+        </div>
     </div>
-</section>
+
+    <!-- Products Table/Grid -->
+    {% if products %}
+    <div class="card">
+        <div class="table-wrapper" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: rgba(16, 185, 129, 0.05);">
+                    <tr>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Name</th>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Price</th>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Stock</th>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Status</th>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Created</th>
+                        <th
+                            style="padding: 1rem 1.5rem; text-align: right; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.15s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">{{ p.name }}</td>
+                        <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">₹{{ "%.2f"|format(p.price)
+                            }}</td>
+                        <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ p.stock }}</td>
+                        <td style="padding: 1rem 1.5rem;">
+                            <span class="badge badge-status-{{ p.status.lower() }}">
+                                {{ p.status.replace('_', ' ').title() }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ p.created_at.strftime("%Y-%m-%d %H:%M") if
+                            p.created_at else "-" }}</td>
+                        <td style="padding: 1rem 1.5rem; text-align: right;">
+                            <a href="{{ url_for('farmer.product_edit', product_id=p.id) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <h3 class="empty-state-title">No products yet</h3>
+        <p class="empty-state-description">Start by adding your first product to the marketplace</p>
+        <div class="empty-state-action">
+            <a href="{{ url_for('farmer.product_create') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus"></i> Add Your First Product
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

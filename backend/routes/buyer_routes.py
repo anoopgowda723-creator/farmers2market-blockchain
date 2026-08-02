@@ -8,6 +8,48 @@ from utils.security import role_required
 
 buyer_bp = Blueprint("buyer", __name__, url_prefix="/buyer")
 
+@buyer_bp.route("/home")
+@login_required
+@role_required("BUYER")
+def home():
+    # Fetch statistics
+    total_orders = Order.query.filter_by(buyer_id=current_user.id).count()
+    pending_orders = Order.query.filter_by(buyer_id=current_user.id).filter(
+        Order.status.in_(["PENDING_PAYMENT", "CONFIRMED", "OUT_FOR_DELIVERY"])
+    ).count()
+    delivered_orders = Order.query.filter_by(buyer_id=current_user.id, status="DELIVERED").count()
+    
+    # Calculate total spent
+    total_spent = db.session.query(db.func.sum(Order.total_amount)).filter_by(
+        buyer_id=current_user.id
+    ).scalar() or 0
+    
+    # Recent orders (last 5)
+    recent_orders = (
+        Order.query.filter_by(buyer_id=current_user.id)
+        .order_by(Order.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    
+    # Featured products (approved products, random selection)
+    featured_products = (
+        Product.query.filter_by(status="APPROVED")
+        .order_by(db.func.random())
+        .limit(8)
+        .all()
+    )
+    
+    return render_template(
+        "buyer/home.html",
+        total_orders=total_orders,
+        pending_orders=pending_orders,
+        delivered_orders=delivered_orders,
+        total_spent=total_spent,
+        recent_orders=recent_orders,
+        featured_products=featured_products
+    )
+
 @buyer_bp.route("/dashboard")
 @login_required
 @role_required("BUYER")
@@ -171,3 +213,38 @@ def checkout():
 def order_detail(order_id):
     order = Order.query.filter_by(id=order_id, buyer_id=current_user.id).first_or_404()
     return render_template("buyer/order_detail.html", order=order)
+
+@buyer_bp.route("/orders")
+@login_required
+@role_required("BUYER")
+def orders():
+    all_orders = (
+        Order.query.filter_by(buyer_id=current_user.id)
+        .order_by(Order.created_at.desc())
+        .all()
+    )
+    return render_template("buyer/orders.html", orders=all_orders)
+
+@buyer_bp.route("/addresses")
+@login_required
+@role_required("BUYER")
+def addresses():
+    # For now, render a simple addresses page
+    # You can expand this later with a proper Address model
+    return render_template("buyer/addresses.html")
+
+@buyer_bp.route("/profile", methods=["GET", "POST"])
+@login_required
+@role_required("BUYER")
+def profile():
+    if request.method == "POST":
+        # Update profile
+        current_user.name = request.form.get("name", current_user.name)
+        current_user.phone = request.form.get("phone", current_user.phone)
+        current_user.address = request.form.get("address", current_user.address)
+        
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for("buyer.profile"))
+    
+    return render_template("buyer/profile.html")

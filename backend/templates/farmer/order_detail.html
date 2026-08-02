@@ -1,52 +1,119 @@
 {% extends "base.html" %}
-{% block title %}Order Detail | FarmerMarket{% endblock %}
+{% block title %}Order Detail | Farmer2Market{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
 
-<section class="page-shell">
-    <div class="page-header">
-        <div>
-            <h1 class="page-title">Order {{ order.order_uuid or order.id }}</h1>
-            <p class="page-subtitle">
-                Buyer: {{ order.buyer.name if order.buyer else '-' }} · Status: {{ order.status }}
-            </p>
+<div class="container" style="max-width: 1000px; padding: 2rem 1rem;">
+    <!-- Page Header -->
+    <div style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+                    <i class="fas fa-file-invoice" style="color: var(--role-farmer);"></i> Order #{{ order.id }}
+                </h1>
+                <p style="color: #6b7280; font-size: 1rem;">
+                    Buyer: <strong>{{ order.buyer.name if order.buyer else '-' }}</strong> ·
+                    Status: <span class="badge badge-status-{{ order.status.lower() }}">{{ order.status.replace('_', '
+                        ').title() }}</span>
+                </p>
+            </div>
+            <a href="{{ url_for('farmer.orders_list') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Back to Orders
+            </a>
         </div>
-        <a href="{{ url_for('farmer.orders_list') }}" class="btn-small btn-outline">← Back to Orders</a>
     </div>
 
-    <div class="section-card">
-        <h2 class="section-title">Order Summary</h2>
-        <p>Total amount: <strong>₹{{ "%.2f"|format(order.total_amount) }}</strong></p>
-        <p>Placed at: {{ order.created_at.strftime("%Y-%m-%d %H:%M") if order.created_at else "-" }}</p>
+    <!-- Order Summary Card -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header" style="background: var(--gradient-farmer); color: white;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0;">Order Summary</h2>
+        </div>
+        <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Total Amount</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; color: var(--role-farmer); margin: 0;">₹{{
+                        "%.2f"|format(order.total_amount) }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Placed At</p>
+                    <p style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0;">{{
+                        order.created_at.strftime("%Y-%m-%d %H:%M") if order.created_at else "-" }}</p>
+                </div>
+            </div>
 
-        <h3 class="section-subtitle mt-4">Delivery Address</h3>
-        <p>{{ order.delivery_address or "Not available" }}</p>
+            <div style="padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                <h3 style="font-size: 1.125rem; font-weight: 700; color: #111827; margin-bottom: 0.75rem;">
+                    <i class="fas fa-map-marker-alt" style="color: var(--role-farmer);"></i> Delivery Address
+                </h3>
+                <p style="color: #374151; line-height: 1.6; margin: 0;">{{ order.delivery_address or "Not available" }}
+                </p>
+            </div>
+        </div>
+    </div>
 
-        <h3 class="section-subtitle mt-4">Items</h3>
-        {% if order.items %}
-            <ul class="plain-list">
+    <!-- Order Items Card -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header" style="background: rgba(16, 185, 129, 0.05);">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0;">
+                <i class="fas fa-shopping-basket"></i> Items
+            </h2>
+        </div>
+        <div class="card-body">
+            {% if order.items %}
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
                 {% for item in order.items %}
-                    <li>
-                        {{ item.product.name if item.product else 'Product' }} –
-                        Qty: {{ item.quantity }} –
-                        ₹{{ "%.2f"|format(item.price) }}
-                    </li>
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f9fafb; border-radius: var(--radius-lg);">
+                    <div>
+                        <p style="font-size: 1rem; font-weight: 600; color: #111827; margin-bottom: 0.25rem;">
+                            {{ item.product.name if item.product else 'Product' }}
+                        </p>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                            Quantity: {{ item.quantity }}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 1.25rem; font-weight: 700; color: var(--role-farmer); margin: 0;">
+                            ₹{{ "%.2f"|format(item.price * item.quantity) }}
+                        </p>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                            @ ₹{{ "%.2f"|format(item.price) }} each
+                        </p>
+                    </div>
+                </div>
                 {% endfor %}
-            </ul>
-        {% else %}
-            <p class="empty-text">Items not loaded in this view.</p>
-        {% endif %}
+            </div>
+            {% else %}
+            <p style="color: #6b7280; text-align: center; padding: 2rem;">Items not loaded in this view.</p>
+            {% endif %}
+        </div>
+    </div>
 
-        {% if order.status == "PAID" %}
-            <form method="post"
-                  action="{{ url_for('farmer.order_confirm', order_id=order.id) }}"
-                  class="mt-4">
-                <button type="submit" class="btn-primary">
-                    Confirm Order
+    <!-- Action Button -->
+    {% if order.status == "PAID" %}
+    <div class="card">
+        <div class="card-body" style="text-align: center;">
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">
+                <i class="fas fa-info-circle" style="color: var(--status-info);"></i>
+                This order has been paid and is ready for confirmation
+            </p>
+            <form method="post" action="{{ url_for('farmer.order_confirm', order_id=order.id) }}">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-check-circle"></i> Confirm Order
                 </button>
             </form>
-        {% endif %}
+        </div>
     </div>
-</section>
+    {% endif %}
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
 {% endblock %}

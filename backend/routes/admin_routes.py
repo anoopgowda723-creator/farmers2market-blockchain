@@ -12,6 +12,61 @@ admin_bp = Blueprint("admin", __name__)
 
 # ---------- DASHBOARD ----------
 
+@admin_bp.route("/home")
+@login_required
+@role_required("ADMIN")
+def home():
+    # Platform statistics
+    total_users = User.query.count()
+    farmers_count = User.query.filter_by(role="FARMER").count()
+    buyers_count = User.query.filter_by(role="BUYER").count()
+    delivery_count = User.query.filter_by(role="DELIVERY").count()
+    
+    total_orders = Order.query.count()
+    
+    # Calculate total revenue
+    total_revenue = db.session.query(db.func.sum(Order.total_amount)).filter_by(
+        status="DELIVERED"
+    ).scalar() or 0
+    
+    # Active deliveries
+    active_delivery_count = Delivery.query.filter(
+        Delivery.status.in_(["ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY"])
+    ).count()
+    
+    # Pending approvals
+    pending_users = User.query.filter_by(is_approved=False).all()
+    pending_products = Product.query.filter_by(status="PENDING_APPROVAL").all()
+    
+    pending_users_count = len(pending_users)
+    pending_products_count = len(pending_products)
+    
+    # Active deliveries list
+    active_deliveries = (
+        Delivery.query.filter(
+            Delivery.status.in_(["ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY"])
+        )
+        .order_by(Delivery.updated_at.desc())
+        .limit(5)
+        .all()
+    )
+    
+    return render_template(
+        "admin/home.html",
+        total_users=total_users,
+        farmers_count=farmers_count,
+        buyers_count=buyers_count,
+        delivery_count=delivery_count,
+        total_orders=total_orders,
+        total_revenue=total_revenue,
+        active_delivery_count=active_delivery_count,
+        pending_users_count=pending_users_count,
+        pending_products_count=pending_products_count,
+        pending_users=pending_users,
+        pending_products=pending_products,
+        active_deliveries=active_deliveries
+    )
+
 @admin_bp.route("/dashboard")
 @login_required
 @role_required("ADMIN")

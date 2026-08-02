@@ -1,0 +1,18 @@
+{
+  "name": "farmer-market-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain scripts for Farmer2Market platform",
+  "scripts": {
+    "ganache": "ganache --port 8545 --networkId 1337 --accounts 10 --defaultBalanceEther 1000 --deterministic",
+    "compile": "python scripts/compile_contract.py",
+    "deploy": "python scripts/deploy_contract.py",
+    "test:connection": "python scripts/test_blockchain_connection.py",
+    "test:contract": "python scripts/test_contract_interaction.py"
+  },
+  "keywords": ["blockchain", "ethereum", "ganache", "web3"],
+  "author": "Farmer2Market Team",
+  "license": "MIT",
+  "devDependencies": {
+    "ganache": "^7.9.0"
+  }
+}

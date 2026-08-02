@@ -15,10 +15,36 @@
         {% for product in products %}
         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
             <div class="product-card-modern">
-                <!-- Product Image -->
+                <!-- Product Image Gallery -->
                 <div class="product-image-wrapper">
-                    <img src="{{ product.image1_url or url_for('static', filename='img/placeholder.jpg') }}"
-                        alt="{{ product.name }}" class="product-image">
+                    <div class="image-carousel" id="carousel-{{ product.id }}">
+                        {% if product.image1_url %}
+                        <img src="{{ product.image1_url }}" alt="{{ product.name }}" class="product-image active">
+                        {% endif %}
+                        {% if product.image2_url %}
+                        <img src="{{ product.image2_url }}" alt="{{ product.name }}" class="product-image">
+                        {% endif %}
+                        {% if product.image3_url %}
+                        <img src="{{ product.image3_url }}" alt="{{ product.name }}" class="product-image">
+                        {% endif %}
+                        {% if not product.image1_url %}
+                        <img src="{{ url_for('static', filename='img/placeholder.jpg') }}" alt="{{ product.name }}"
+                            class="product-image active">
+                        {% endif %}
+                    </div>
+
+                    <!-- Image Navigation Dots -->
+                    {% set image_count = [product.image1_url, product.image2_url, product.image3_url] | select | list |
+                    length %}
+                    {% if image_count > 1 %}
+                    <div class="image-dots">
+                        {% for i in range(image_count) %}
+                        <span class="dot {% if i == 0 %}active{% endif %}"
+                            onclick="showImage({{ product.id }}, {{ i }})"></span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
                     {% if product.stock > 0 %}
                     <span class="stock-badge stock-available">In Stock</span>
                     {% else %}
@@ -115,15 +141,59 @@
         background: #f3f4f6;
     }
 
+    .image-carousel {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
     .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        transition: opacity 0.5s ease;
+        opacity: 0;
     }
 
-    .product-card-modern:hover .product-image {
+    .product-image.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .product-card-modern:hover .product-image.active {
         transform: scale(1.05);
+    }
+
+    .image-dots {
+        position: absolute;
+        bottom: 0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        z-index: 2;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dot.active {
+        background: #ffffff;
+        width: 24px;
+        border-radius: 4px;
+    }
+
+    .dot:hover {
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .stock-badge {
@@ -136,6 +206,7 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        z-index: 2;
     }
 
     .stock-available {
@@ -326,6 +397,46 @@
 </style>
 
 <script>
+    // Image carousel functionality
+    function showImage(productId, index) {
+        const carousel = document.getElementById('carousel-' + productId);
+        const images = carousel.querySelectorAll('.product-image');
+        const dots = carousel.parentElement.querySelectorAll('.dot');
+
+        images.forEach((img, i) => {
+            if (i === index) {
+                img.classList.add('active');
+            } else {
+                img.classList.remove('active');
+            }
+        });
+
+        dots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    // Auto-rotate images every 3 seconds
+    document.addEventListener('DOMContentLoaded', function () {
+        const carousels = document.querySelectorAll('.image-carousel');
+        carousels.forEach(carousel => {
+            const images = carousel.querySelectorAll('.product-image');
+            if (images.length > 1) {
+                const productId = carousel.id.replace('carousel-', '');
+                let currentIndex = 0;
+
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    showImage(productId, currentIndex);
+                }, 3000);
+            }
+        });
+    });
+
     function increaseQty(productId, maxStock) {
         const input = document.getElementById('quantity-' + productId);
         const currentValue = parseInt(input.value);

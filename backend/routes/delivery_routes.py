@@ -29,6 +29,55 @@ def _save_proof_image(file_storage):
     file_storage.save(path)
     return f"/static/uploads/proofs/{filename}"
 
+@delivery_bp.route("/home")
+@login_required
+@role_required("DELIVERY")
+def home():
+    # Calculate total earnings (simplified - assuming fixed delivery fee)
+    completed_deliveries_count = Delivery.query.filter_by(
+        delivery_partner_id=current_user.id,
+        status="DELIVERED"
+    ).count()
+    total_earnings = completed_deliveries_count * 50  # Assuming ₹50 per delivery
+    
+    # Active deliveries
+    active_deliveries = Delivery.query.filter_by(
+        delivery_partner_id=current_user.id
+    ).filter(
+        Delivery.status.in_(["ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY"])
+    ).count()
+    
+    # Success rate
+    total_deliveries = Delivery.query.filter_by(delivery_partner_id=current_user.id).count()
+    success_rate = int((completed_deliveries_count / total_deliveries * 100)) if total_deliveries > 0 else 100
+    
+    # Active deliveries list
+    active_deliveries_list = (
+        Delivery.query.filter_by(delivery_partner_id=current_user.id)
+        .filter(Delivery.status.in_(["ASSIGNED", "ACCEPTED", "PICKED_UP", "ON_THE_WAY"]))
+        .order_by(Delivery.updated_at.desc())
+        .limit(4)
+        .all()
+    )
+    
+    # Recent earnings (completed deliveries)
+    recent_earnings = (
+        Delivery.query.filter_by(delivery_partner_id=current_user.id, status="DELIVERED")
+        .order_by(Delivery.updated_at.desc())
+        .limit(5)
+        .all()
+    )
+    
+    return render_template(
+        "delivery/home.html",
+        total_earnings=total_earnings,
+        active_deliveries=active_deliveries,
+        completed_deliveries=completed_deliveries_count,
+        success_rate=success_rate,
+        active_deliveries_list=active_deliveries_list,
+        recent_earnings=recent_earnings
+    )
+
 @delivery_bp.route("/dashboard")
 @login_required
 @role_required("DELIVERY")
@@ -109,3 +158,66 @@ def update_status(delivery_id):
     db.session.commit()
     flash(f"Status updated to {new_status}", "success")
     return redirect(url_for("delivery.dashboard"))
+
+# Additional routes for delivery home page
+
+@delivery_bp.route("/available-deliveries")
+@login_required
+@role_required("DELIVERY")
+def available_deliveries():
+    # Show unassigned deliveries
+    available = Order.query.filter(
+        Order.status.in_(["FARMER_CONFIRMED", "PAID"]),
+        Order.delivery_partner_id == None
+    ).order_by(Order.created_at.desc()).all()
+    
+    return render_template("delivery/available_deliveries.html", orders=available)
+
+@delivery_bp.route("/my-deliveries")
+@login_required
+@role_required("DELIVERY")
+def my_deliveries():
+    deliveries = (
+        Delivery.query.filter_by(delivery_partner_id=current_user.id)
+        .order_by(Delivery.updated_at.desc())
+        .all()
+    )
+    return render_template("delivery/my_deliveries.html", deliveries=deliveries)
+
+@delivery_bp.route("/earnings")
+@login_required
+@role_required("DELIVERY")
+def earnings():
+    completed = (
+        Delivery.query.filter_by(delivery_partner_id=current_user.id, status="DELIVERED")
+        .order_by(Delivery.updated_at.desc())
+        .all()
+    )
+    total_earnings = len(completed) * 50  # Assuming ₹50 per delivery
+    return render_template("delivery/earnings.html", deliveries=completed, total_earnings=total_earnings)
+
+@delivery_bp.route("/profile", methods=["GET", "POST"])
+@login_required
+@role_required("DELIVERY")
+def profile():
+    if request.method == "POST":
+        # Update profile
+        current_user.name = request.form.get("name", current_user.name)
+        current_user.phone = request.form.get("phone", current_user.phone)
+        current_user.address = request.form.get("address", current_user.address)
+        
+        db.session.commit()
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for("delivery.profile"))
+    
+    return render_template("delivery/profile.html")
+
+@delivery_bp.route("/delivery/<int:delivery_id>")
+@login_required
+@role_required("DELIVERY")
+def delivery_detail(delivery_id):
+    delivery = Delivery.query.filter_by(
+        id=delivery_id,
+        delivery_partner_id=current_user.id
+    ).first_or_404()
+    return render_template("delivery/delivery_detail.html", delivery=delivery)

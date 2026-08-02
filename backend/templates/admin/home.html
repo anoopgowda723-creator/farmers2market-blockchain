@@ -1,0 +1,373 @@
+{% extends "admin/layout_admin.html" %}
+
+{% block title %}Admin Dashboard - Home | Farmer2Market{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+
+<div class="container" style="max-width: 1400px; padding: 2rem 1rem;">
+    <!-- Role Introduction Hero -->
+    <div
+        style="background: var(--gradient-admin); padding: 3rem 2rem; border-radius: var(--radius-3xl); margin-bottom: 2rem; color: white;">
+        <div style="max-width: 900px;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div
+                    style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: var(--radius-2xl); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                    ⚡
+                </div>
+                <div>
+                    <p style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.25rem;">Admin Portal</p>
+                    <h1 style="font-size: 2.5rem; font-weight: 900; margin: 0;">System Control Center</h1>
+                </div>
+            </div>
+            <div
+                style="background: rgba(255,255,255,0.15); padding: 1.5rem; border-radius: var(--radius-xl); backdrop-filter: blur(10px);">
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">Your Role: Administrator</h2>
+                <p style="font-size: 1rem; line-height: 1.6; opacity: 0.95; margin: 0;">
+                    As an administrator, you oversee the entire Farmer2Market platform. Your responsibilities include
+                    approving new users and products, managing delivery assignments, monitoring system health, and
+                    ensuring smooth operations. You maintain the integrity and quality of the marketplace while
+                    supporting all stakeholders.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-bolt" style="color: var(--role-admin);"></i> Administrative Tools
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <a href="{{ url_for('admin.users_list') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-admin);">
+                    👥
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Manage Users</h3>
+                    <p class="action-card-description">Approve & manage all users</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('admin.products_list') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-admin);">
+                    📦
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Manage Products</h3>
+                    <p class="action-card-description">Review product listings</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('admin.deliveries') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-admin);">
+                    🚚
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Deliveries</h3>
+                    <p class="action-card-description">Assign & track deliveries</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('admin.dashboard') }}" class="action-card">
+                <div class="action-card-icon" style="background: var(--gradient-admin);">
+                    📊
+                </div>
+                <div class="action-card-content">
+                    <h3 class="action-card-title">Analytics</h3>
+                    <p class="action-card-description">View detailed reports</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Platform Statistics -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-chart-line" style="color: var(--role-admin);"></i> Platform Overview
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Total Users</p>
+                        <p class="stat-card-value">{{ total_users }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--role-admin);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Registered accounts</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Total Orders</p>
+                        <p class="stat-card-value">{{ total_orders }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--status-success);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Platform-wide orders</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Active Deliveries</p>
+                        <p class="stat-card-value">{{ active_delivery_count }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(245, 158, 11, 0.1); color: var(--accent-orange);">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">In transit now</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Revenue</p>
+                        <p class="stat-card-value">₹{{ "%.0f"|format(total_revenue) if total_revenue else 0 }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(16, 185, 129, 0.1); color: var(--status-success);">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Total platform revenue</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Breakdown -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">
+            <i class="fas fa-users-cog" style="color: var(--role-admin);"></i> User Distribution
+        </h2>
+        <div class="grid grid-cols-4 gap-6"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Farmers</p>
+                        <p class="stat-card-value">{{ farmers_count }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--role-farmer);">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Registered farmers</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Buyers</p>
+                        <p class="stat-card-value">{{ buyers_count }}</p>
+                    </div>
+                    <div class="stat-card-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--role-buyer);">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Active buyers</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Delivery Partners</p>
+                        <p class="stat-card-value">{{ delivery_count }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(245, 158, 11, 0.1); color: var(--role-delivery);">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Active partners</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <p class="stat-card-title">Pending Approvals</p>
+                        <p class="stat-card-value">{{ pending_users_count }}</p>
+                    </div>
+                    <div class="stat-card-icon"
+                        style="background: rgba(251, 191, 36, 0.1); color: var(--accent-yellow);">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                </div>
+                <p class="stat-card-description">Awaiting review</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    {% if pending_users_count > 0 %}
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827;">
+                <i class="fas fa-user-check" style="color: var(--accent-yellow);"></i> Pending User Approvals
+            </h2>
+            <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-primary">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="table-wrapper" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(59, 130, 246, 0.05);">
+                        <tr>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Name</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Email</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Phone</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Role</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Registered</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: right; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in pending_users[:5] %}
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">{{ u.name }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ u.email }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ u.phone }}</td>
+                            <td style="padding: 1rem 1.5rem;">
+                                <span class="badge badge-role-{{ u.role.lower() }}">{{ u.role }}</span>
+                            </td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ u.created_at.strftime('%b %d, %Y') if
+                                u.created_at else '-' }}</td>
+                            <td style="padding: 1rem 1.5rem; text-align: right;">
+                                <form method="post" action="{{ url_for('admin.approve_user', user_id=u.id) }}"
+                                    style="display: inline;">
+                                    <button class="btn btn-sm btn-success" type="submit">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.deactivate_user', user_id=u.id) }}"
+                                    style="display: inline; margin-left: 0.5rem;">
+                                    <button class="btn btn-sm btn-outline" type="submit">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Pending Products -->
+    {% if pending_products_count > 0 %}
+    <div style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827;">
+                <i class="fas fa-box-open" style="color: var(--accent-yellow);"></i> Pending Product Approvals
+            </h2>
+            <a href="{{ url_for('admin.products_list') }}" class="btn btn-outline-primary">
+                View All <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="table-wrapper" style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(59, 130, 246, 0.05);">
+                        <tr>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Product</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Farmer</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Price</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Stock</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Submitted</th>
+                            <th
+                                style="padding: 1rem 1.5rem; text-align: right; font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase;">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in pending_products[:5] %}
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">{{ p.name }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ p.farmer.name if p.farmer else '-' }}
+                            </td>
+                            <td style="padding: 1rem 1.5rem; color: #111827; font-weight: 600;">₹{{
+                                "%.2f"|format(p.price) }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ p.stock }}</td>
+                            <td style="padding: 1rem 1.5rem; color: #6b7280;">{{ p.created_at.strftime('%b %d, %Y') if
+                                p.created_at else '-' }}</td>
+                            <td style="padding: 1rem 1.5rem; text-align: right;">
+                                <form method="post" action="{{ url_for('admin.approve_product', product_id=p.id) }}"
+                                    style="display: inline;">
+                                    <button class="btn btn-sm btn-success" type="submit">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ url_for('admin.reject_product', product_id=p.id) }}"
+                                    style="display: inline; margin-left: 0.5rem;">
+                                    <button class="btn btn-sm btn-outline" type="submit">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- System Health -->
+    <div class="alert alert-success">
+        <div class="alert-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="alert-content">
+            <p class="alert-title">System Status: Operational</p>
+            <p>All services are running normally. Blockchain connected, payment gateway active.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}

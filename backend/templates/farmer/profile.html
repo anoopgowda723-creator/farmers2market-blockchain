@@ -2,96 +2,143 @@
 {% block title %}Profile & Payouts | Farmer Dashboard{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/farmer.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
 
-<section class="page-shell">
-  <div class="page-header">
-    <div>
-      <h1 class="page-title">Profile & Payment Details</h1>
-      <p class="page-subtitle">
-        Keep your contact, payout and warehouse information up to date.
-      </p>
+<div class="container" style="max-width: 1000px; padding: 2rem 1rem;">
+  <!-- Page Header -->
+  <div style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div>
+        <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem;">
+          <i class="fas fa-user-circle" style="color: var(--role-farmer);"></i> Profile & Payment Details
+        </h1>
+        <p style="color: #6b7280; font-size: 1rem;">
+          Keep your contact, payout and warehouse information up to date.
+        </p>
+      </div>
+      <a href="{{ url_for('farmer.dashboard') }}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
     </div>
-    <a href="{{ url_for('farmer.dashboard') }}" class="btn-soft">
-      ← Back to Dashboard
-    </a>
   </div>
 
-  <div class="section-card">
-    <form method="post" class="fm-form">
-      <!-- CSRF Token removed as we are using standard forms -->
-
-      <h2 class="section-subtitle">Basic Info</h2>
-      <div class="form-grid-2">
+  <!-- Form Card -->
+  <div class="card">
+    <form method="post" style="padding: 2rem;">
+      <!-- Basic Info -->
+      <h2
+        style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--role-farmer);">
+        Basic Info
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
         <div class="form-group">
-          <label for="name">Name</label>
-          <input name="name" id="name" value="{{ current_user.name or '' }}" required>
+          <label for="name"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Name</label>
+          <input type="text" name="name" id="name" value="{{ current_user.name or '' }}" required
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div class="form-group">
-          <label for="phone">Phone</label>
-          <input name="phone" id="phone" value="{{ current_user.phone or '' }}" required>
+          <label for="phone"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Phone</label>
+          <input type="text" name="phone" id="phone" value="{{ current_user.phone or '' }}" required
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="address">Warehouse Address</label>
-        <textarea name="address" id="address" rows="3"
-          placeholder="Full address of your warehouse or pickup point">{{ current_user.address or '' }}</textarea>
+      <div class="form-group" style="margin-bottom: 2rem;">
+        <label for="address" style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Warehouse
+          Address</label>
+        <textarea name="address" id="address" rows="3" placeholder="Full address of your warehouse or pickup point"
+          style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s; resize: vertical;"
+          onfocus="this.style.borderColor='var(--role-farmer)'"
+          onblur="this.style.borderColor='#e5e7eb'">{{ current_user.address or '' }}</textarea>
       </div>
 
-      <h2 class="section-subtitle mt-4">Warehouse Location</h2>
-      <p class="field-hint">
-        This location is shared with delivery partners after an order is placed.
+      <!-- Warehouse Location -->
+      <h2
+        style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--role-farmer);">
+        Warehouse Location
+      </h2>
+      <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1.5rem;">
+        <i class="fas fa-info-circle" style="color: var(--role-farmer);"></i> This location is shared with delivery
+        partners after an order is placed.
       </p>
 
-      <div class="form-grid-3">
+      <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1.5rem; margin-bottom: 2rem;">
         <div class="form-group">
-          <label for="warehouse_lat">Latitude</label>
+          <label for="warehouse_lat"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Latitude</label>
           <input type="text" name="warehouse_lat" id="warehouse_lat" value="{{ current_user.warehouse_lat or '' }}"
-            readonly>
+            readonly
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; background: #f9fafb;">
         </div>
         <div class="form-group">
-          <label for="warehouse_lng">Longitude</label>
+          <label for="warehouse_lng"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Longitude</label>
           <input type="text" name="warehouse_lng" id="warehouse_lng" value="{{ current_user.warehouse_lng or '' }}"
-            readonly>
+            readonly
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; background: #f9fafb;">
         </div>
-        <div class="form-group align-end">
-          <button type="button" id="btn-locate" class="btn-soft-full">
-            Use my current location
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+          <button type="button" id="btn-locate" class="btn btn-outline-primary" style="white-space: nowrap;">
+            <i class="fas fa-location-arrow"></i> Use Current Location
           </button>
         </div>
       </div>
 
-      <h2 class="section-subtitle mt-4">Payout Details</h2>
+      <!-- Payout Details -->
+      <h2
+        style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--role-farmer);">
+        Payout Details
+      </h2>
 
-      <div class="form-grid-2">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
         <div class="form-group">
-          <label for="bank_account_no">Bank Account Number</label>
-          <input name="bank_account_no" id="bank_account_no" value="{{ current_user.bank_account_no or '' }}">
+          <label for="bank_account_no"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Bank Account Number</label>
+          <input type="text" name="bank_account_no" id="bank_account_no"
+            value="{{ current_user.bank_account_no or '' }}"
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div class="form-group">
-          <label for="ifsc_code">IFSC Code</label>
-          <input name="ifsc_code" id="ifsc_code" value="{{ current_user.ifsc_code or '' }}">
+          <label for="ifsc_code" style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">IFSC
+            Code</label>
+          <input type="text" name="ifsc_code" id="ifsc_code" value="{{ current_user.ifsc_code or '' }}"
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
       </div>
 
-      <div class="form-grid-2">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
         <div class="form-group">
-          <label for="upi_id">UPI ID</label>
-          <input name="upi_id" id="upi_id" placeholder="example@upi" value="{{ current_user.upi_id or '' }}">
+          <label for="upi_id" style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">UPI
+            ID</label>
+          <input type="text" name="upi_id" id="upi_id" placeholder="example@upi" value="{{ current_user.upi_id or '' }}"
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
         <div class="form-group">
-          <label for="wallet_address">Wallet Address (optional)</label>
-          <input name="wallet_address" id="wallet_address" value="{{ current_user.wallet_address or '' }}">
+          <label for="wallet_address"
+            style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Wallet Address
+            (optional)</label>
+          <input type="text" name="wallet_address" id="wallet_address" value="{{ current_user.wallet_address or '' }}"
+            style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.15s;"
+            onfocus="this.style.borderColor='var(--role-farmer)'" onblur="this.style.borderColor='#e5e7eb'">
         </div>
       </div>
 
-      <div class="form-actions">
-        <button type="submit" class="btn-primary-lg">Save Changes</button>
+      <!-- Submit Button -->
+      <div style="display: flex; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
       </div>
     </form>
   </div>
-</section>
+</div>
 
 <script>
   document.getElementById("btn-locate").addEventListener("click", function () {
@@ -107,4 +154,12 @@
     });
   });
 </script>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="grid-template-columns"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
 {% endblock %}
