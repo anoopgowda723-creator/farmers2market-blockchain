@@ -254,17 +254,6 @@ Transaction Recorded on Blockchain
 
 ---
 
-## Product Listing
-
-![Products](screenshots/products.png)
-
----
-
-## Shopping Cart
-
-![Cart](screenshots/cart.png)
-
----
 
 ## Order Management
 
@@ -281,12 +270,6 @@ Transaction Recorded on Blockchain
 ## Blockchain Transaction
 
 ![Blockchain](screenshots/blockchain.png)
-
----
-
-## Delivery Tracking
-
-![Delivery](screenshots/delivery.png)
 
 ---
 
