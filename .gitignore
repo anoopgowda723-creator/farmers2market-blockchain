@@ -1,38 +1,88 @@
-# Environment secrets
+# ==========================
+# Environment Variables
+# ==========================
 .env
+.env.*
+*.env
 
-# Python virtual environment
-backend/venv/
+# ==========================
+# Python Virtual Environments
+# ==========================
 venv/
+.venv/
 env/
+ENV/
+backend/venv/
 
-# Python cache
+# ==========================
+# Python Cache
+# ==========================
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
+# ==========================
 # Flask
+# ==========================
 instance/
+.webassets-cache/
 
-# Database files
-*.sqlite3
+# ==========================
+# Testing
+# ==========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================
+# Logs
+# ==========================
+*.log
+
+# ==========================
+# Database
+# ==========================
 *.db
+*.sqlite
+*.sqlite3
 
-# Node dependencies
+# PostgreSQL Dumps
+*.sql
+*.dump
+
+# ==========================
+# Uploads (Optional)
+# Uncomment if uploads should NOT be stored in Git
+# ==========================
+# backend/static/uploads/
+
+# ==========================
+# Node.js
+# ==========================
 node_modules/
 
-# Build files
-dist/
+# ==========================
+# Build Files
+# ==========================
 build/
+dist/
+*.egg-info/
 
-# IDE files
+# ==========================
+# IDE
+# ==========================
 .vscode/
 .idea/
 
-# OS files
+# ==========================
+# OS Files
+# ==========================
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# ==========================
+# Certificates & Keys
+# ==========================
+*.pem
+*.key
+*.crt
