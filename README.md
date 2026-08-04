@@ -232,6 +232,39 @@ Database + Blockchain Layer
 
 \---
 
+---
+
+# 📸 Application Screenshots
+
+## User Registration
+
+![Register](screenshots/register.png)
+
+## User Login
+
+![Login](screenshots/login.png)
+
+## Farmer Dashboard
+
+![Farmer Dashboard](screenshots/farmer_dashboard.png)
+
+## Buyer Products
+
+![Buyer Products](screenshots/buyer_products.png)
+
+## Order Management
+
+![Orders](screenshots/orders.png)
+
+## Payment Integration
+
+![Payment](screenshots/payment.png)
+
+## Blockchain Transaction
+
+![Blockchain Transaction](screenshots/blockchain.png)
+
+---
 
 
 \# 🛠️ Technology Stack

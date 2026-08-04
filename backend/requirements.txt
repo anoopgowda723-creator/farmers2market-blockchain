@@ -1,6 +1,6 @@
 Flask
 Flask-SQLAlchemy
-PyMySQL
+psycopg2-binary
 web3
 razorpay
 python-dotenv

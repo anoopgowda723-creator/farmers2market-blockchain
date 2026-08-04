@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 # Load Environment (.env)
 # ==========================================
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 ENV_FILE = PROJECT_ROOT / ".env"
 
 if ENV_FILE.exists():
@@ -48,7 +48,6 @@ login_manager.login_view = "auth.login"
 login_manager.login_message = "Please login to continue"
 
 
-
 # ==========================================
 # Application Factory
 # ==========================================
@@ -63,9 +62,7 @@ def create_app(config_class=DevelopmentConfig):
 
 
     # Load Flask Config
-
     app.config.from_object(config_class)
-
 
 
     # ======================================
@@ -75,7 +72,6 @@ def create_app(config_class=DevelopmentConfig):
     db.init_app(app)
 
 
-
     # ======================================
     # Login Manager
     # ======================================
@@ -83,12 +79,10 @@ def create_app(config_class=DevelopmentConfig):
     login_manager.init_app(app)
 
 
-
     @login_manager.user_loader
     def load_user(user_id):
 
         return User.query.get(int(user_id))
-
 
 
     # ======================================
@@ -109,7 +103,6 @@ def create_app(config_class=DevelopmentConfig):
         )
 
 
-
     # ======================================
     # Payment Initialization
     # ======================================
@@ -128,13 +121,11 @@ def create_app(config_class=DevelopmentConfig):
         )
 
 
-
     # ======================================
     # Register Routes
     # ======================================
 
     register_blueprints(app)
-
 
 
     # ======================================
@@ -150,10 +141,7 @@ def create_app(config_class=DevelopmentConfig):
         }
 
 
-
     return app
-
-
 
 
 
@@ -163,9 +151,7 @@ def create_app(config_class=DevelopmentConfig):
 
 if __name__ == "__main__":
 
-
     app = create_app()
-
 
     app.run(
         host="127.0.0.1",
